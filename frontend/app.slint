@@ -1,0 +1,46 @@
+import { MaterialWindow, MaterialWindowAdapter, NavigationDrawer } from "../material-components//material.slint";
+import { MainWindowAdapter } from "./main_window_adapter.slint";
+import { FilledIcons, OutlinedIcons } from "./icons.slint";
+import { SmallAppBar } from "../material-components/ui/components/app_bar.slint";
+import { Navbar } from "./components/navgation_bar.slint";
+import { LibraryView } from "views/library_view.slint";
+import { QueueView } from "views/queue_view.slint";
+import { SettingsView } from "views/settings_view.slint";
+
+
+export component MainWindow inherits MaterialWindow {
+    callback get_rust_value() -> [string];
+    callback switch_watcher(bool) -> bool;
+    property <[string]> cardName: ["Cardx1", "Cardx2", "Cardx3"];
+    property <bool> settings-enable-watcher;
+
+    preferred-width: 800px;
+    preferred-height: 600px;
+    background: MainWindowAdapter.background;
+    default-font-family: "Roboto";
+
+    property <int> tab-index;
+
+    HorizontalLayout {
+        Navbar {
+            selected-tab-changed(index) => {
+                tab-index = index;
+            }
+        }
+        
+        // Switch Tabs
+        if tab-index == 0: QueueView {
+            cards: cardName;
+            buttonClicked => {
+                cardName = get_rust_value();
+            }
+        }
+        if tab-index == 1: LibraryView{}
+        if tab-index == 2: SettingsView {
+            enable-watcher <=> settings-enable-watcher;
+            settingsChanged => {
+                switch_watcher(settings-enable-watcher);
+            }
+        }
+    }
+}

@@ -1,0 +1,60 @@
+import { MaterialText } from "../../material-components/ui/components/material_text.slint";
+import { SmallAppBar } from "../../material-components/material.slint";
+import { Switch, ScrollView } from "std-widgets.slint";
+
+export component SettingsView {
+    in-out property <bool> enable-watcher;
+    callback settingsChanged() -> bool;
+
+    VerticalLayout {
+        SmallAppBar {
+            title: "Settings";
+        }
+        
+        Rectangle {
+            background: transparent;
+            horizontal-stretch: 1;
+            vertical-stretch: 1;
+
+            HorizontalLayout {
+                Rectangle {background: transparent; horizontal-stretch: 1;}
+                ScrollView {
+                    horizontal-stretch: 5;
+                    VerticalLayout {
+                        padding: 20px;
+                        spacing: 10px;
+                        HorizontalLayout {
+                            spacing: 10px;
+                            MaterialText {
+                                text: "Watcher Thread";
+                                font-size: 16px;
+                                vertical-alignment: center;
+                            }
+                            Switch {
+                                checked <=> enable-watcher;
+                                toggled => {
+                                    settingsChanged();
+                                }
+                            }
+                        }
+                        HorizontalLayout {
+                            spacing: 10px;
+                            MaterialText {
+                                text: "Other Options";
+                                font-size: 16px;
+                                vertical-alignment: center;
+                            }
+                            Switch {}
+                        }
+                        Rectangle {
+                            background: transparent;
+                            vertical-stretch: 1;
+                        }
+                    }
+                }
+                Rectangle {background: transparent; horizontal-stretch: 1;}
+            }
+
+        }
+    }
+}
