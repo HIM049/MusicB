@@ -1,0 +1,39 @@
+import { FilledCard } from "../../material-components/ui/components/card.slint";
+import { MaterialText } from "../../material-components/ui/components/material_text.slint";
+import { Switch } from "std-widgets.slint";
+import { FilledButton } from "../../material-components/ui/components/filled_button.slint";
+
+
+export component SettingItem {
+    in property <string> label;
+
+    HorizontalLayout {
+        spacing: 10px;
+        MaterialText {
+            text: label;
+            font-size: 16px;
+            vertical-alignment: center;
+        }
+        @children
+    }
+}
+
+export component SettingsCard {
+    in property <string> title;
+    
+    FilledCard {
+        width: parent.width;
+
+        VerticalLayout {
+            padding: 20px;
+            spacing: 10px;
+            Text {
+                text: title;
+                font-size: 16px;
+                font-weight: 600;
+            }
+            @children
+        }
+
+    }
+}

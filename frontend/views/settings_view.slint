@@ -1,6 +1,9 @@
 import { MaterialText } from "../../material-components/ui/components/material_text.slint";
 import { SmallAppBar } from "../../material-components/material.slint";
 import { Switch, ScrollView } from "std-widgets.slint";
+import { FilledCard } from "../../material-components/ui/components/card.slint";
+import { SettingsCard, SettingItem } from "../components/settings_card.slint";
+import { FilledButton } from "../../material-components/ui/components/filled_button.slint";
 
 export component SettingsView {
     in-out property <bool> enable-watcher;
@@ -17,42 +20,55 @@ export component SettingsView {
             vertical-stretch: 1;
 
             HorizontalLayout {
-                Rectangle {background: transparent; horizontal-stretch: 1;}
+                Rectangle {background: transparent;}
                 ScrollView {
-                    horizontal-stretch: 5;
+                    width: 60%;
                     VerticalLayout {
-                        padding: 20px;
-                        spacing: 10px;
-                        HorizontalLayout {
-                            spacing: 10px;
-                            MaterialText {
-                                text: "Watcher Thread";
-                                font-size: 16px;
-                                vertical-alignment: center;
+                        padding-top: 20px;
+                        spacing: 20px;
+
+                        SettingsCard {
+                            title: "Functions";
+                            SettingItem {
+                                label: "Folder Watcher";
+                                Switch {
+                                    checked <=> enable-watcher;
+                                    toggled => {
+                                        settingsChanged();
+                                    }
+                                }
                             }
-                            Switch {
-                                checked <=> enable-watcher;
-                                toggled => {
-                                    settingsChanged();
+                            SettingItem {
+                                label: "Folder Watcher";
+                                Switch {
+                                    checked <=> enable-watcher;
+                                    toggled => {
+                                        settingsChanged();
+                                    }
                                 }
                             }
                         }
-                        HorizontalLayout {
-                            spacing: 10px;
-                            MaterialText {
-                                text: "Other Options";
-                                font-size: 16px;
-                                vertical-alignment: center;
+
+                        SettingsCard {
+                            title: "Preview Card";
+                            SettingItem {
+                                label: "Switch Item";
+                                Switch {}
                             }
-                            Switch {}
+                            SettingItem {
+                                label: "Button Item";
+                                FilledButton {text: "button";}
+                            }
                         }
+
+                        // Bottom
                         Rectangle {
                             background: transparent;
                             vertical-stretch: 1;
                         }
                     }
                 }
-                Rectangle {background: transparent; horizontal-stretch: 1;}
+                Rectangle {background: transparent;}
             }
 
         }
