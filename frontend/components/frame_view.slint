@@ -1,0 +1,66 @@
+
+import { SmallAppBar } from "../../material-components/material.slint";
+import { ScrollView } from "std-widgets.slint";
+
+// Basic view frame
+export component FrameView {
+    in property <string> title;
+    
+    width: 100%;
+    height: 100%;
+    VerticalLayout {
+        HorizontalLayout {
+            Rectangle {width: 20px;}
+            SmallAppBar {
+                title: title;
+            }
+
+        }
+        Rectangle {
+            background: transparent;
+            horizontal-stretch: 1;
+            vertical-stretch: 1;
+
+            @children
+
+        }
+    }
+}
+
+// Scrollable view frame
+export component FrameViewScroll {
+    in property <string> title;
+    width: 100%;
+    height: 100%;
+
+    FrameView {
+        title: title;
+            HorizontalLayout {
+                Rectangle {background: transparent;}
+                ScrollView {
+                    width: 60%;
+                    @children
+                }
+                Rectangle {background: transparent;}
+            }
+    }
+}
+
+// VerticalLayout view frame
+export component FrameViewVertical {
+    in property <string> title;
+    width: 100%;
+    height: 100%;
+
+    FrameView {
+        title: title;
+            HorizontalLayout {
+                Rectangle {background: transparent;}
+                VerticalLayout {
+                    // width: 60%;
+                    @children
+                }
+                Rectangle {background: transparent;}
+            }
+    }
+}

@@ -4,73 +4,61 @@ import { Switch, ScrollView } from "std-widgets.slint";
 import { FilledCard } from "../../material-components/ui/components/card.slint";
 import { SettingsCard, SettingItem } from "../components/settings_card.slint";
 import { FilledButton } from "../../material-components/ui/components/filled_button.slint";
+import { FrameView, FrameViewScroll } from "../components/frame_view.slint";
 
 export component SettingsView {
     in-out property <bool> enable-watcher;
     callback settingsChanged() -> bool;
 
-    VerticalLayout {
-        SmallAppBar {
-            title: "Settings";
-        }
+    FrameViewScroll {
+        title: "Settings";
         
-        Rectangle {
-            background: transparent;
-            horizontal-stretch: 1;
-            vertical-stretch: 1;
+        // ScrollView {
+        //     width: 60%;
+        VerticalLayout {
+            padding-top: 20px;
+            spacing: 20px;
 
-            HorizontalLayout {
-                Rectangle {background: transparent;}
-                ScrollView {
-                    width: 60%;
-                    VerticalLayout {
-                        padding-top: 20px;
-                        spacing: 20px;
-
-                        SettingsCard {
-                            title: "Functions";
-                            SettingItem {
-                                label: "Folder Watcher";
-                                Switch {
-                                    checked <=> enable-watcher;
-                                    toggled => {
-                                        settingsChanged();
-                                    }
-                                }
-                            }
-                            SettingItem {
-                                label: "Folder Watcher";
-                                Switch {
-                                    checked <=> enable-watcher;
-                                    toggled => {
-                                        settingsChanged();
-                                    }
-                                }
-                            }
-                        }
-
-                        SettingsCard {
-                            title: "Preview Card";
-                            SettingItem {
-                                label: "Switch Item";
-                                Switch {}
-                            }
-                            SettingItem {
-                                label: "Button Item";
-                                FilledButton {text: "button";}
-                            }
-                        }
-
-                        // Bottom
-                        Rectangle {
-                            background: transparent;
-                            vertical-stretch: 1;
+            SettingsCard {
+                title: "Functions";
+                SettingItem {
+                    label: "Folder Watcher";
+                    Switch {
+                        checked <=> enable-watcher;
+                        toggled => {
+                            settingsChanged();
                         }
                     }
                 }
-                Rectangle {background: transparent;}
+                SettingItem {
+                    label: "Folder Watcher";
+                    Switch {
+                        checked <=> enable-watcher;
+                        toggled => {
+                            settingsChanged();
+                        }
+                    }
+                }
             }
 
+            SettingsCard {
+                title: "Preview Card";
+                SettingItem {
+                    label: "Switch Item";
+                    Switch {}
+                }
+                SettingItem {
+                    label: "Button Item";
+                    FilledButton {text: "button";}
+                }
+            }
+
+            // Bottom
+            Rectangle {
+                background: transparent;
+                vertical-stretch: 1;
+            }
         }
+        // }
     }
 }

@@ -3,8 +3,8 @@ import { MainWindowAdapter } from "./main_window_adapter.slint";
 import { FilledIcons, OutlinedIcons } from "./icons.slint";
 import { SmallAppBar } from "../material-components/ui/components/app_bar.slint";
 import { Navbar } from "./components/navgation_bar.slint";
-import { LibraryView } from "views/library_view.slint";
-import { QueueView } from "views/queue_view.slint";
+import { SpaceView } from "views/space_view.slint";
+import { DownloadView } from "views/download_view.slint";
 import { SettingsView } from "views/settings_view.slint";
 
 
@@ -29,13 +29,13 @@ export component MainWindow inherits MaterialWindow {
         }
         
         // Switch Tabs
-        if tab-index == 0: QueueView {
+        if tab-index == 0: DownloadView {
             cards: cardName;
             buttonClicked => {
                 cardName = get_rust_value();
             }
         }
-        if tab-index == 1: LibraryView{}
+        if tab-index == 1: SpaceView{}
         if tab-index == 2: SettingsView {
             enable-watcher <=> settings-enable-watcher;
             settingsChanged => {

@@ -1,0 +1,58 @@
+import { MaterialText } from "../../material-components/ui/components/material_text.slint";
+import { SmallAppBar, FilledButton, FilledCard } from "../../material-components/material.slint";
+import { ScrollView } from "std-widgets.slint";
+import { FrameViewVertical } from "../components/frame_view.slint";
+
+export component SpaceView {
+
+    FrameViewVertical {
+        title: "Space";
+        // Buttons bar
+        HorizontalLayout {
+            horizontal-stretch: 1;
+            spacing: 10px;
+            
+            FilledButton {
+                text: "Button1";
+                horizontal-stretch: 0;
+                vertical-stretch: 0;
+                
+            }
+            FilledButton {
+                text: "Button2";
+                horizontal-stretch: 0;
+                vertical-stretch: 0;
+            }
+            Rectangle {
+                vertical-stretch: 1;
+            }
+        }
+
+        // List zone
+        HorizontalLayout {
+            padding-top: 20px;
+            // Left list
+            HorizontalLayout {
+                alignment: center;
+                ScrollView {
+                    horizontal-stretch: 1;
+                    vertical-scrollbar-policy: always-on;
+
+                    width: 220px;
+                    
+                    VerticalLayout {
+                        spacing: 5px;
+
+                        FilledCard {
+                            clickable: true;
+                            Text {
+                                text: "Nothing";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+}
