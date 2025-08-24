@@ -2,17 +2,20 @@ import { MaterialWindow, MaterialWindowAdapter, NavigationDrawer } from "../mate
 import { MainWindowAdapter } from "./main_window_adapter.slint";
 import { FilledIcons, OutlinedIcons } from "./icons.slint";
 import { SmallAppBar } from "../material-components/ui/components/app_bar.slint";
-import { Navbar } from "./components/navgation_bar.slint";
+import { Sidebar } from "./components/sidebar.slint";
 import { SpaceView } from "views/space_view.slint";
 import { DownloadView } from "views/download_view.slint";
 import { SettingsView } from "views/settings_view.slint";
 
 
 export component MainWindow inherits MaterialWindow {
-    callback get_rust_value() -> [string];
+    callback get_bili_information(string);
     callback switch_watcher(bool) -> bool;
-    property <[string]> cardName: ["Cardx1", "Cardx2", "Cardx3"];
-    property <bool> settings-enable-watcher;
+    private property <bool> settings-enable-watcher;
+    private property <string> bvid;
+    in property <bool> showInfo;
+    in property <string> videoTitle;
+
 
     preferred-width: 800px;
     preferred-height: 600px;
@@ -22,17 +25,20 @@ export component MainWindow inherits MaterialWindow {
     property <int> tab-index;
 
     HorizontalLayout {
-        Navbar {
-            selected-tab-changed(index) => {
-                tab-index = index;
-            }
+        Sidebar {
+            current_item <=> tab-index;
         }
         
         // Switch Tabs
         if tab-index == 0: DownloadView {
-            cards: cardName;
+            userInput <=> bvid;
+            VideoTitle: videoTitle;
+            isShowInfo: showInfo;
+
+
             buttonClicked => {
-                cardName = get_rust_value();
+                // cardName = get_rust_value();
+                get_bili_information(bvid);
             }
         }
         if tab-index == 1: SpaceView{}

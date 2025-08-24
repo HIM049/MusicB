@@ -1,7 +1,8 @@
 import { MaterialText } from "../../material-components/ui/components/material_text.slint";
 import { SmallAppBar, FilledButton, FilledCard } from "../../material-components/material.slint";
-import { ScrollView } from "std-widgets.slint";
+import { ScrollView, ComboBox } from "std-widgets.slint";
 import { FrameViewVertical } from "../components/frame_view.slint";
+import { OutlinedCard } from "../../material-components/ui/components/card.slint";
 
 export component SpaceView {
 
@@ -44,11 +45,16 @@ export component SpaceView {
                         spacing: 5px;
 
                         FilledCard {
-                            clickable: true;
                             Text {
                                 text: "Nothing";
                             }
                         }
+                        OutlinedCard {
+                            Text {
+                                text: "Nothing";
+                            }
+                        }
+                        ComboBox {}
                     }
                 }
             }

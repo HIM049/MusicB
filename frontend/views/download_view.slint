@@ -2,79 +2,59 @@ import { MaterialText } from "../../material-components/ui/components/material_t
 import { SmallAppBar, FilledButton, Ripple, FilledCard } from "../../material-components/material.slint";
 import { ScrollView } from "std-widgets.slint";
 import { FrameView, FrameViewVertical } from "../components/frame_view.slint";
+import { TextField } from "../../material-components/ui/components/text_field.slint";
+import { OutlinedCard } from "../../material-components/ui/components/card.slint";
 
 export component DownloadView {
-    in property <[string]> cards;
+    in-out property <string> userInput;
+    in property <bool> isShowInfo;
+    in property <string> VideoTitle;
     callback buttonClicked();
 
     FrameViewVertical {
         title: "Download";
 
         // Buttons bar
-        HorizontalLayout {
-            horizontal-stretch: 1;
+        VerticalLayout {
+            width: 70%;
             spacing: 10px;
-            
-            FilledButton {
-                text: "Button1";
-                horizontal-stretch: 0;
-                vertical-stretch: 0;
-                clicked => {buttonClicked()}
+
+            OutlinedCard {
+                VerticalLayout {
+                    padding: 20px;
+                    spacing: 10px;
+                    TextField {
+                        text <=> userInput;
+                        label: "BVID";
+                        vertical-stretch: 0;
+                    }
+                    FilledButton {
+                        text: "Subscribe";
+                        vertical-stretch: 0;
+                        clicked => {
+                            buttonClicked();
+                        }
+                    }
+                }
             }
-            FilledButton {
-                text: "Button2";
-                horizontal-stretch: 0;
-                vertical-stretch: 0;
-            }
-            Rectangle {
-                vertical-stretch: 1;
+
+            if isShowInfo : FilledCard {
+                VerticalLayout {
+                    padding: 20px;
+                    MaterialText {
+                        text: "Info";
+                        font-size: 18px;
+                        font-weight: 650;
+                    }
+                    MaterialText {
+                        text: VideoTitle;
+                        font-size: 18px;
+                    }
+                }
             }
         }
-
-        HorizontalLayout {
-            padding-top: 20px;
-            alignment: center;
-            // Left list
-            ScrollView {
-                width: 220px;
-                horizontal-stretch: 1;
-                vertical-scrollbar-policy: always-on;
-                
-                VerticalLayout {
-                    spacing: 5px;
-
-                    for cardName in cards : FilledCard {
-                        height: 60px;
-                        width: 200px;
-
-                        MaterialText {
-                            text: cardName;
-                            font-size: 16px;
-                            font-weight: 600;
-                        }
-                    }
-                }
-            }
-            
-            ScrollView {
-                width: 220px;
-                horizontal-stretch: 1;
-                vertical-scrollbar-policy: always-on;
-                
-                VerticalLayout {
-                    spacing: 5px;
-                    FilledCard {
-                        height: 60px;
-                        width: 200px;
-
-                        MaterialText {
-                            text: "SortBox1";
-                            font-size: 16px;
-                            font-weight: 600;
-                        }
-                    }
-                }
-            }
+        Rectangle {
+            vertical-stretch: 1;
         }
     }
 }

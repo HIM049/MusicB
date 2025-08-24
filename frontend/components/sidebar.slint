@@ -3,10 +3,9 @@ import { FilledIcons, OutlinedIcons } from "../icons.slint";
 import { MainWindowAdapter } from "../main_window_adapter.slint";
 import { MaterialText } from "../../material-components/ui/components/material_text.slint";
 
-export component Navbar {
-    callback selected-tab-changed(int);
-    in-out property <int> group_index;
-    in-out property <int> item_index;
+export component Sidebar {
+    in-out property <int> current_group;
+    in-out property <int> current_item;
 
     width: 250px;
     
@@ -18,7 +17,7 @@ export component Navbar {
             VerticalLayout {
                 padding: 10px;
                 MaterialText {
-                    text: "FS Manager";
+                    text: "BMusic-R";
                     font-size: 26px;
                     font-weight: 700;
                     horizontal-alignment: center;
@@ -27,22 +26,22 @@ export component Navbar {
         }
         
         NavigationDrawer {
-            current_group: group_index;
-            current_item: item_index;
+            current_group <=> current_group;
+            current_item <=> current_item;
             groups: [
                 {
                     title: "Functions",
                     items: [
                         {
-                            icon: OutlinedIcons.edit,
-                            icon_selected: FilledIcons.edit,
-                            text: "Queue",
+                            icon: OutlinedIcons.inbox,
+                            icon_selected: FilledIcons.inbox,
+                            text: "Download",
 
                         },
                         {
-                            icon: OutlinedIcons.bookmark,
-                            icon_selected: FilledIcons.bookmark,
-                            text: "Library",
+                            icon: OutlinedIcons.account_box,
+                            icon_selected: FilledIcons.account_box,
+                            text: "Space",
                         },
                         {
                             icon: OutlinedIcons.settings,
@@ -52,9 +51,6 @@ export component Navbar {
                     ]
                 }
             ];
-            changed current_item => {
-                selected-tab-changed(self.current_item);
-            }
         }
         
     }
