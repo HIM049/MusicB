@@ -3,7 +3,7 @@ This project is a complete remake of BiliAudioDownloader, designed to provide a 
 
 **Note: This project is still in its early development stage**
 
-# Rodemap (longtime)
+# Rodemap (long-tern)
 - [ ] Basic function of music download
 - [ ] Music tag manager / Metadata Querying
 - [ ] Library management
