@@ -36,13 +36,6 @@ async fn main() {
             }
 
         });
-
-        // thread::spawn(move || {
-        //     let result = blocking(bvid.to_string());
-        //     ui.upgrade_in_event_loop(move |win| {
-        //         win.set_result(SharedString::from(result));
-        //     })
-        // });
     });
 
     ui.run().expect("Failed to run the main window");
