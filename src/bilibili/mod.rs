@@ -1,3 +1,3 @@
 pub mod video;
 pub mod modules;
-pub mod wbi;
+pub mod wbi_generater;

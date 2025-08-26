@@ -2922,10 +2922,12 @@ dependencies = [
 name = "material-gallery"
 version = "1.11.0"
 dependencies = [
+ "chrono",
  "console_error_panic_hook",
  "md5",
  "notify",
  "num_enum",
+ "rand_agents",
  "reqwest",
  "serde",
  "serde_json",
@@ -3935,6 +3937,15 @@ dependencies = [
  "libc",
  "rand_chacha",
  "rand_core",
+]
+
+[[package]]
+name = "rand_agents"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a443ab8a19bb7bbfa003b760590d7b6fe13fab900e18d766d1819576c43e797c"
+dependencies = [
+ "rand",
 ]
 
 [[package]]
