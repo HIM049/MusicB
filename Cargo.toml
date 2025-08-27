@@ -24,11 +24,12 @@ notify = "8.1.0"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.143"
 tokio = { version = "1", features = ["full"] }
-reqwest = { version = "0.12.23", features = ["json"] }
+reqwest = { version = "0.12.23", features = ["json", "stream"] }
 num_enum = "0.7.4"
 md5 = "0.8.0"
 rand_agents = "1.0.0"
 chrono = "0.4.41"
+futures-util = "0.3.31"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { version = "0.2" }

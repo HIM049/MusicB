@@ -24,8 +24,8 @@ async fn main() {
         tokio::spawn(async move {
             let mut video = Video::from_bvid(bvid.to_string()).await.unwrap();
             video.get_stream().await.unwrap();
-
-            println!("video: {:?}", video); //TODO: Remove it
+            video.download_stream().await.unwrap();
+            // println!("video: {:?}", video); //TODO: Remove it
 
             if let Err(e) = slint::invoke_from_event_loop(move || {
                 if let Some(ui) = ui.upgrade() {

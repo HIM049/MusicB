@@ -1,14 +1,11 @@
-use std::time::{Instant, SystemTime, SystemTimeError};
 
-use chrono::Utc;
-use rand_agents::user_agent;
-use reqwest::{header, Client, Request};
+use std::time::Duration;
+
+use reqwest::{header, Client, RequestBuilder};
 use serde_json::Value;
-use tokio::stream;
 
 use crate::bilibili::{
-    modules::{AudioQuality, BiliInfo, BiliStream, Meta, Upper, Video},
-    wbi_generater::{encode_wbi, get_wbi_keys},
+    downloader::stream_downloader, modules::{BiliInfo, BiliStream, Meta, Upper, Video}, utils, wbi_generater::{encode_wbi, get_wbi_keys}
 };
 // #[derive(Debug, Eq, PartialEq, TryFromPrimitive)]
 // #[repr(i32)]
@@ -39,6 +36,27 @@ impl Video {
         self.flac_stream = flac;
         Ok(())
     }
+    pub async fn download_stream(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        let stream_url: String;
+        if let Some(flac_stream) = &self.flac_stream {
+            if let Some(url) = flac_stream.get_stream_url() {
+                stream_url = url;
+            } else {
+                return Err("URL expired (timeout)".into());
+            }
+        } else if let Some(stream) = &self.stream {
+            if let Some(url) = stream.get_stream_url() {
+                stream_url = url;
+            } else {
+                return Err("URL expired (timeout)".into());
+            }
+        } else {
+                return Err("Invalid stream URLs".into());
+        }
+        stream_downloader(stream_url, "C:\\Users\\HIM~\\Desktop\\resp.m4a".to_string()).await?;
+
+        Ok(())
+    }
 }
 
 enum QueryType {
@@ -65,7 +83,7 @@ async fn get_video_details(
     let resp = client
         .get(format!("{}?{}", url, params))
         .header(header::REFERER, "https://www.bilibili.com")
-        .header(header::USER_AGENT, get_user_agent())
+        .header(header::USER_AGENT, utils::get_user_agent())
         .send()
         .await?;
     let json_resp: Value = serde_json::from_str(resp.text().await?.as_str()).unwrap();
@@ -118,7 +136,7 @@ async fn get_video_stream(
     let resp = client
         .get(format!("{}?{}", url, params))
         .header(header::REFERER, "https://www.bilibili.com")
-        .header(header::USER_AGENT, get_user_agent())
+        .header(header::USER_AGENT, utils::get_user_agent())
         .send()
         .await?;
 
@@ -149,9 +167,4 @@ async fn get_video_stream(
     let flac_stream = BiliStream::from_json(json_resp["data"]["dash"]["flac"]["audio"].clone());
 
     Ok((stream, flac_stream))
-}
-
-pub fn get_user_agent() -> String {
-    // "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36".to_string()
-    user_agent()
 }

@@ -1,7 +1,9 @@
-use std::time::SystemTime;
+use std::time::{Duration, SystemTime};
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+
+use crate::bilibili::downloader::stream_downloader;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Video {
@@ -64,6 +66,16 @@ impl BiliStream {
             get_time: SystemTime::now(),
         };
         Some(stream)
+    }
+
+    pub fn get_stream_url(&self) -> Option<String> {
+        let elapsed = self.get_time.elapsed().unwrap();
+        if elapsed < Duration::from_secs(60 * 25) {
+            return Some(self.base_url.clone());
+        } else {
+            return None;
+        }
+        
     }
 }
 
