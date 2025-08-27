@@ -4,9 +4,8 @@ import { FilledIcons, OutlinedIcons } from "./icons.slint";
 import { SmallAppBar } from "../material-components/ui/components/app_bar.slint";
 import { Sidebar } from "./components/sidebar.slint";
 import { SpaceView } from "views/space_view.slint";
-import { DownloadView } from "views/download_view.slint";
+import { DownloadView, VideoInfo } from "views/download_view.slint";
 import { SettingsView } from "views/settings_view.slint";
-
 
 export component MainWindow inherits MaterialWindow {
     callback get_bili_information(string);
@@ -15,6 +14,8 @@ export component MainWindow inherits MaterialWindow {
     private property <string> bvid;
     in property <bool> showInfo;
     in property <string> videoTitle;
+    in property <VideoInfo> videoInfo;
+    in property <image> inputImage;
 
 
     preferred-width: 800px;
@@ -32,9 +33,9 @@ export component MainWindow inherits MaterialWindow {
         // Switch Tabs
         if tab-index == 0: DownloadView {
             userInput <=> bvid;
-            VideoTitle: videoTitle;
             isShowInfo: showInfo;
-
+            videoInfo: videoInfo;
+            videoImage: inputImage;
 
             buttonClicked => {
                 // cardName = get_rust_value();

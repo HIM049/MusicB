@@ -2925,6 +2925,7 @@ dependencies = [
  "chrono",
  "console_error_panic_hook",
  "futures-util",
+ "image",
  "md5",
  "notify",
  "num_enum",

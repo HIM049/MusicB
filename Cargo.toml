@@ -30,6 +30,7 @@ md5 = "0.8.0"
 rand_agents = "1.0.0"
 chrono = "0.4.41"
 futures-util = "0.3.31"
+image = "0.25.6"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { version = "0.2" }

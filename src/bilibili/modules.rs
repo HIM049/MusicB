@@ -62,7 +62,7 @@ impl BiliStream {
         let stream = BiliStream {
             quality: AudioQuality::from_num(if let Some(num) = json["id"].as_i64() { num } else { return None; }),
             base_url: if let Some(str) = json["base_url"].as_str() { str.to_string() } else { return None; },
-            codecs: if let Some(str) = json["base_url"].as_str() { str.to_string() } else { return None; },
+            codecs: if let Some(str) = json["codecs"].as_str() { str.to_string() } else { return None; },
             get_time: SystemTime::now(),
         };
         Some(stream)

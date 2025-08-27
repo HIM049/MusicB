@@ -5,10 +5,18 @@ import { FrameView, FrameViewVertical } from "../components/frame_view.slint";
 import { TextField } from "../../material-components/ui/components/text_field.slint";
 import { OutlinedCard } from "../../material-components/ui/components/card.slint";
 
+export struct VideoInfo {
+    title: string,
+    author: string,
+    cover: image,
+    count: int,
+}
+
 export component DownloadView {
     in-out property <string> userInput;
     in property <bool> isShowInfo;
-    in property <string> VideoTitle;
+    in property <VideoInfo> videoInfo;
+    in property <image> videoImage;
     callback buttonClicked();
 
     FrameViewVertical {
@@ -19,10 +27,15 @@ export component DownloadView {
             width: 70%;
             spacing: 10px;
 
-            OutlinedCard {
+            FilledCard {
                 VerticalLayout {
                     padding: 20px;
                     spacing: 10px;
+                    MaterialText {
+                        text: "Query";
+                        font-size: 18px;
+                        font-weight: 700;
+                    }
                     TextField {
                         text <=> userInput;
                         label: "BVID";
@@ -38,16 +51,27 @@ export component DownloadView {
                 }
             }
 
-            if isShowInfo : FilledCard {
+            if true : FilledCard {
                 VerticalLayout {
+                    Image {
+                        source: videoImage;
+                    }
                     padding: 20px;
                     MaterialText {
-                        text: "Info";
+                        text: "Information";
                         font-size: 18px;
                         font-weight: 650;
                     }
                     MaterialText {
-                        text: VideoTitle;
+                        text: videoInfo.title;
+                        font-size: 18px;
+                    }
+                    MaterialText {
+                        text: videoInfo.author;
+                        font-size: 18px;
+                    }
+                    MaterialText {
+                        text: videoInfo.count;
                         font-size: 18px;
                     }
                 }

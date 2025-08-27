@@ -1,7 +1,6 @@
 
-use std::time::Duration;
 
-use reqwest::{header, Client, RequestBuilder};
+use reqwest::{header, Client};
 use serde_json::Value;
 
 use crate::bilibili::{
