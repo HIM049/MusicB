@@ -27,6 +27,26 @@ pub struct BiliInfo {
     pub desc: String,     // 简介
 }
 
+impl BiliInfo {
+    pub fn from_json(json: Value) -> Option<BiliInfo> {
+        Some(
+            BiliInfo {
+                aid: json["aid"].as_i64()?,
+                bvid: json["bvid"].as_str()?.to_string(),
+                cid: json["cid"].as_i64()?,
+                pic: json["pic"].as_str()?.to_string(),
+                videos: json["videos"].as_i64()?,
+                tid: json["tid"].as_i64()?,
+                tid_v2: json["tid_v2"].as_i64()?,
+                tname: json["tname"].as_str()?.to_string(),
+                tname_v2: json["tname_v2"].as_str()?.to_string(),
+                pubdate: json["pubdate"].as_i64()?,
+                desc: json["desc"].as_str()?.to_string(),
+            }
+        )
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BiliStream {
     pub quality: AudioQuality,
@@ -36,7 +56,7 @@ pub struct BiliStream {
 }
 
 impl BiliStream {
-    pub fn from_json(json: Value) -> Option<BiliStream> {
+    pub fn from_json(json: Value) -> Option<Self> {
         let stream = BiliStream {
             quality: AudioQuality::from_num(if let Some(num) = json["id"].as_i64() { num } else { return None; }),
             base_url: if let Some(str) = json["base_url"].as_str() { str.to_string() } else { return None; },
@@ -55,11 +75,36 @@ pub struct Meta {
     pub lyrics_path: String, // data.subtitle.list[0]. id / lan字幕语言 / lan_doc字幕语言名称 / is_lock / author_mid / subtitle_url
 }
 
+impl Meta {
+    pub fn from_json(json: Value) -> Option<Self> {
+        Some(
+            Meta {
+            title: json["title"].as_str()?.to_string(),
+            cover_url: json["pic"].as_str()?.to_string(),
+            author: json["title"].as_str()?.to_string(),
+            lyrics_path: "".to_string(), //TODO
+        }
+    )
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Upper {
     pub mid: i64,
     pub name: String,
     pub avatar: String,
+}
+
+impl Upper {
+    pub fn from_json(json: Value) -> Option<Self> {
+        Some(
+            Upper {
+                mid: json["mid"].as_i64()?,
+                name: json["name"].as_str()?.to_string(),
+                avatar: json["face"].as_str()?.to_string(),
+            }
+        )
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
