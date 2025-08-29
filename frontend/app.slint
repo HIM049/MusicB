@@ -10,6 +10,7 @@ import { SettingsView } from "views/settings_view.slint";
 export component MainWindow inherits MaterialWindow {
     callback get_bili_information(string);
     callback switch_watcher(bool) -> bool;
+    callback start_download();
     private property <bool> settings-enable-watcher;
     private property <string> bvid;
     in property <bool> showInfo;
@@ -38,8 +39,11 @@ export component MainWindow inherits MaterialWindow {
             videoImage: inputImage;
 
             buttonClicked => {
-                // cardName = get_rust_value();
                 get_bili_information(bvid);
+            }
+
+            startDownload => {
+                start_download();
             }
         }
         if tab-index == 1: SpaceView{}

@@ -6,15 +6,25 @@
 
 mod bilibili;
 mod frontend;
-use std::sync::Arc;
-
+use std::{collections::HashMap, sync::Arc};
+use image::{ImageBuffer, Rgba};
+use once_cell::sync::Lazy;
+use tokio::sync::Mutex;
 use slint::{Image, SharedPixelBuffer, SharedString};
 use bilibili::modules::Video;
 
-use crate::frontend::load_image;
+use crate::{bilibili::video, frontend::load_image};
 
 
 slint::include_modules!();
+
+static APP_STATE: Lazy<Mutex<AppState>> = Lazy::new(|| {
+    Mutex::new(AppState { current_item: None })
+});
+
+pub struct AppState {
+    pub current_item: Option<Video>,
+}
 
 
 #[tokio::main]
@@ -27,22 +37,19 @@ async fn main() {
         let ui = ui_handle.clone();
 
         tokio::spawn(async move {
-            let mut video = Video::from_bvid(bvid.to_string()).await.unwrap();
-            let cover = Arc::new(load_image("http://i0.hdslb.com/bfs/archive/026405c07be8d948ec294658651b51e7f3fd7932.jpg".to_string()).await);
-            video.get_stream().await.unwrap();
-            // video.download_stream().await.unwrap();
-            println!("video: {:?}", video); //TODO: Remove it
+                    
+            let video = Video::from_bvid(bvid.to_string()).await;
+            let mut app_state = APP_STATE.lock().await;
+            app_state.current_item = if let Ok(v) = video {Some(v)} else {None};
+
+            let cover: Arc<ImageBuffer<Rgba<u8>, Vec<u8>>>;
+            if let Some(item) = &app_state.current_item {
+                cover = Arc::new(load_image(item.meta.cover_url.clone()).await);
+            } else {
+                return;
+            }
             
-
-
             if let Err(e) = slint::invoke_from_event_loop(move || {
-                
-                // let video_info = VideoInfo { 
-                //     author: video.upper.name.into(), 
-                //     count: 1, 
-                //     cover: Image::from_rgb8(SharedPixelBuffer::clone_from_slice(&cover, cover.width(), cover.height())), 
-                //     title: video.meta.title.into(), 
-                // };
 
                 if let Some(ui) = ui.upgrade() {
                     // ui.set_videoInfo(video_info);
@@ -55,6 +62,18 @@ async fn main() {
                 println!("{}", e);
             }
 
+        });
+    });
+
+    ui.on_start_download(move || {
+        tokio::spawn(async move {
+            let app_state = APP_STATE.lock().await;
+            if let Some(v) = &app_state.current_item {
+                let video = v.get_stream().await.unwrap();
+                video.download_stream().await.unwrap();
+                println!("Download Finished")
+            }
+    
         });
     });
 

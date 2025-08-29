@@ -1,11 +1,9 @@
 use std::time::{Duration, SystemTime};
-
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::bilibili::downloader::stream_downloader;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Video {
     pub info: BiliInfo,
     pub stream: Option<BiliStream>,
@@ -14,7 +12,7 @@ pub struct Video {
     pub upper: Upper,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BiliInfo {
     pub aid: i64,
     pub bvid: String,
@@ -49,7 +47,7 @@ impl BiliInfo {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BiliStream {
     pub quality: AudioQuality,
     pub base_url: String,
@@ -79,7 +77,7 @@ impl BiliStream {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Meta {
     pub title: String,
     pub cover_url: String,
@@ -100,7 +98,7 @@ impl Meta {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Upper {
     pub mid: i64,
     pub name: String,
@@ -119,7 +117,7 @@ impl Upper {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum AudioQuality {
     Unknown,
     Low64K,

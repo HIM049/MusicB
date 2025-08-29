@@ -2929,6 +2929,7 @@ dependencies = [
  "md5",
  "notify",
  "num_enum",
+ "once_cell",
  "rand_agents",
  "reqwest",
  "serde",

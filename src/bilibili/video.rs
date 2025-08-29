@@ -6,14 +6,6 @@ use serde_json::Value;
 use crate::bilibili::{
     downloader::stream_downloader, modules::{BiliInfo, BiliStream, Meta, Upper, Video}, utils, wbi_generater::{encode_wbi, get_wbi_keys}
 };
-// #[derive(Debug, Eq, PartialEq, TryFromPrimitive)]
-// #[repr(i32)]
-// enum RespCode {
-//     Success = 0,
-//     Error = -400,
-//     PremissionDenied = -403,
-
-// }
 
 impl Video {
     pub async fn from_bvid(
@@ -28,12 +20,16 @@ impl Video {
         let video = get_video_details(QueryType::AVID, avid).await?;
         Ok(video)
     }
-    pub async fn get_stream(&mut self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn get_stream(&self) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
         let (stream, flac) =
             get_video_stream(self.info.bvid.clone(), self.info.cid.clone()).await?;
-        self.stream = stream;
-        self.flac_stream = flac;
-        Ok(())
+        Ok(
+            Video {
+                stream: stream,
+                flac_stream: flac,
+                ..self.clone()
+            }
+        )
     }
     pub async fn download_stream(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let stream_url: String;

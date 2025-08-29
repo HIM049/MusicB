@@ -18,6 +18,7 @@ export component DownloadView {
     in property <VideoInfo> videoInfo;
     in property <image> videoImage;
     callback buttonClicked();
+    callback startDownload();
 
     FrameViewVertical {
         title: "Download";
@@ -51,7 +52,8 @@ export component DownloadView {
                 }
             }
 
-            if true : FilledCard {
+            // Infomation card
+            if isShowInfo : FilledCard {
                 VerticalLayout {
                     Image {
                         source: videoImage;
@@ -62,17 +64,9 @@ export component DownloadView {
                         font-size: 18px;
                         font-weight: 650;
                     }
-                    MaterialText {
-                        text: videoInfo.title;
-                        font-size: 18px;
-                    }
-                    MaterialText {
-                        text: videoInfo.author;
-                        font-size: 18px;
-                    }
-                    MaterialText {
-                        text: videoInfo.count;
-                        font-size: 18px;
+                    FilledButton {
+                        text: "Download";
+                        clicked => {startDownload()}
                     }
                 }
             }
