@@ -1,10 +1,11 @@
 import { MaterialText } from "../../material-components/ui/components/material_text.slint";
 import { SmallAppBar } from "../../material-components/material.slint";
-import { Switch, ScrollView } from "std-widgets.slint";
+import { Switch, ScrollView, Button } from "std-widgets.slint";
 import { FilledCard } from "../../material-components/ui/components/card.slint";
 import { SettingsCard, SettingItem } from "../components/settings_card.slint";
 import { FilledButton } from "../../material-components/ui/components/filled_button.slint";
 import { FrameView, FrameViewScroll } from "../components/frame_view.slint";
+import { FilledIcons } from "../icons.slint";
 
 export component SettingsView {
     in-out property <bool> enable-watcher;
@@ -13,8 +14,6 @@ export component SettingsView {
     FrameViewScroll {
         title: "Settings";
         
-        // ScrollView {
-        //     width: 60%;
         VerticalLayout {
             padding-top: 20px;
             spacing: 20px;
@@ -42,6 +41,22 @@ export component SettingsView {
             }
 
             SettingsCard {
+                title: "Cache and Data";
+                SettingItem {
+                    label: "Refresh Wbi";
+                    FilledButton {
+                        icon: FilledIcons.delete;
+                    }
+                }
+                SettingItem {
+                    label: "Clear Cache";
+                    FilledButton {
+                        icon: FilledIcons.delete;
+                    }
+                }
+            }
+
+            SettingsCard {
                 title: "Preview Card";
                 SettingItem {
                     label: "Switch Item";
@@ -59,6 +74,5 @@ export component SettingsView {
                 vertical-stretch: 1;
             }
         }
-        // }
     }
 }
