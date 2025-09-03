@@ -4,7 +4,7 @@ use reqwest::{header, Client};
 use serde_json::Value;
 
 use crate::bilibili::{
-    downloader::stream_downloader, modules::{BiliInfo, BiliStream, Meta, Upper, Video}, utils, wbi_generater::{encode_wbi, get_wbi_keys}
+    downloader::stream_downloader, modules::{BiliInfo, BiliStream, PlayerInfo, Upper, Video}, utils, wbi_generater::{encode_wbi, get_wbi_keys}
 };
 
 impl Video {
@@ -27,6 +27,15 @@ impl Video {
             Video {
                 stream: stream,
                 flac_stream: flac,
+                ..self.clone()
+            }
+        )
+    }
+    pub async fn get_player_info(&self, bvid: String, cid: i64) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
+        let player_info = get_player_information(bvid, cid).await?;
+        Ok(
+            Self {
+                player_info: Some(player_info),
                 ..self.clone()
             }
         )
@@ -96,13 +105,47 @@ async fn get_video_details(
     let err_msg = "failed when deserialization response";
     let video = Video {
         info: BiliInfo::from_json(json_resp["data"].clone()).ok_or(err_msg)?,
+        player_info: None,
         stream: None,
         flac_stream: None,
-        meta: Meta::from_json(json_resp["data"].clone()).ok_or(err_msg)?,
+        meta: None, // TODO: Get meta from other info
+        // meta: Meta::from_json(json_resp["data"].clone()).ok_or(err_msg)?,
         upper: Upper::from_json(json_resp["data"]["owner"].clone()).ok_or(err_msg)?,
     };
 
     Ok(video)
+}
+
+// get web player data
+async fn get_player_information(bvid: String, cid: i64) -> Result<PlayerInfo, Box<dyn std::error::Error + Send + Sync>> {
+    // Create client
+    let client = Client::new();
+    let wbi = get_wbi_keys().await.unwrap(); // TODO: Move to global
+
+    // Write params and generate wbi
+    let params = encode_wbi(
+        vec![
+            ("bvid", bvid),
+            ("cid", cid.to_string()),
+        ],
+        wbi,
+    );
+
+    let sessdata = "b5e67494%2C1768908938%2C4b0ee%2A72CjCaQ4sSvAvGDflEA0itHWwEQjvHIgYr2_Dm6fhHcLX5JVaTDKBS4whM7JbRYeCdmNwSVjhmNkZKTXpNRGtpb3J3NWEzaGlLSFh5RG9Ld3gzVjM5RVltNlJYUXNyOTVlQnRZb2JRU0xNSWhSX21GX2VOUXpxU2dyaVFjR1U0a1NzUVNSNUhqVm53IIEC";
+
+    // Write into url and send request
+    let url = "https://api.bilibili.com/x/player/wbi/v2";
+    let resp = client
+        .get(format!("{}?{}", url, params))
+        .header(header::REFERER, "https://www.bilibili.com")
+        .header(header::USER_AGENT, utils::get_user_agent())
+        .header(header::COOKIE, format!("SESSDATA={}", sessdata))
+        .send()
+        .await?;
+
+    let json_resp: Value = serde_json::from_str(resp.text().await?.as_str()).unwrap();
+
+    Ok(PlayerInfo::from_json(json_resp["data"].clone()).ok_or("failed when deserialization response")?)
 }
 
 // API docs https://socialsisteryi.github.io/bilibili-API-collect/docs/video/videostream_url.html#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E6%B5%81%E5%9C%B0%E5%9D%80-web%E7%AB%AF

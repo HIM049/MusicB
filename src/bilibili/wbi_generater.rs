@@ -109,17 +109,17 @@ fn take_filename(url: String) -> Option<String> {
         .map(|(s, _)| s.to_string())
 }
 
-#[tokio::main]
-async fn main() {
-    let keys = get_wbi_keys().await.unwrap();
-    let params = vec![
-        ("foo", String::from("114")),
-        ("bar", String::from("514")),
-        ("baz", String::from("1919810")),
-    ];
-    let query = encode_wbi(params, keys);
-    println!("{}", query);
-}
+// #[tokio::main]
+// async fn main() {
+//     let keys = get_wbi_keys().await.unwrap();
+//     let params = vec![
+//         ("foo", String::from("114")),
+//         ("bar", String::from("514")),
+//         ("baz", String::from("1919810")),
+//     ];
+//     let query = encode_wbi(params, keys);
+//     println!("{}", query);
+// }
 
 // 取自文档描述的测试用例
 #[cfg(test)]
