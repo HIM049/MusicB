@@ -12,47 +12,44 @@ export component Sidebar {
     VerticalLayout {
         Rectangle {
             background: #1a1b20;
-            padding: 10px;
             
             VerticalLayout {
-                padding: 10px;
+                padding-top: 10px;
+                
                 MaterialText {
                     text: "Music-B";
                     font-size: 26px;
                     font-weight: 700;
                     horizontal-alignment: center;
                 }
+                NavigationDrawer {
+                    current_group <=> current_group;
+                    current_item <=> current_item;
+                    groups: [
+                        {
+                            title: "Functions",
+                            items: [
+                                {
+                                    icon: OutlinedIcons.archive,
+                                    icon_selected: FilledIcons.archive,
+                                    text: "Download",
+
+                                },
+                                {
+                                    icon: OutlinedIcons.account_box,
+                                    icon_selected: FilledIcons.account_box,
+                                    text: "Space",
+                                },
+                                {
+                                    icon: OutlinedIcons.settings,
+                                    icon_selected: FilledIcons.settings,
+                                    text: "Settings",
+                                }
+                            ]
+                        }
+                    ];
+                }
             }
         }
-        
-        NavigationDrawer {
-            current_group <=> current_group;
-            current_item <=> current_item;
-            groups: [
-                {
-                    title: "Functions",
-                    items: [
-                        {
-                            icon: OutlinedIcons.archive,
-                            icon_selected: FilledIcons.archive,
-                            text: "Download",
-
-                        },
-                        {
-                            icon: OutlinedIcons.account_box,
-                            icon_selected: FilledIcons.account_box,
-                            text: "Space",
-                        },
-                        {
-                            icon: OutlinedIcons.settings,
-                            icon_selected: FilledIcons.settings,
-                            text: "Settings",
-                        }
-                    ]
-                }
-            ];
-        }
-        
     }
-    
 }
