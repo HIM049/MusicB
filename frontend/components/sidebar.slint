@@ -24,25 +24,25 @@ export component Sidebar {
                 }
                 NavigationDrawer {
                     current_group <=> current_group;
-                    current_item <=> current_item;
+                    current_index <=> current_item;
                     groups: [
                         {
                             title: "Functions",
                             items: [
                                 {
                                     icon: OutlinedIcons.archive,
-                                    icon_selected: FilledIcons.archive,
+                                    selected_icon: FilledIcons.archive,
                                     text: "Download",
 
                                 },
                                 {
                                     icon: OutlinedIcons.account_box,
-                                    icon_selected: FilledIcons.account_box,
+                                    selected_icon: FilledIcons.account_box,
                                     text: "Space",
                                 },
                                 {
                                     icon: OutlinedIcons.settings,
-                                    icon_selected: FilledIcons.settings,
+                                    selected_icon: FilledIcons.settings,
                                     text: "Settings",
                                 }
                             ]

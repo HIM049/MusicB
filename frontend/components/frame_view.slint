@@ -16,11 +16,11 @@ export component FrameView {
             Rectangle {width: 20px;}
             SmallAppBar {
                 title: title;
-                leading_icon: {
+                leading_button: {
                     icon: leading-icon,
                     enabled: true,
                 };
-                leading_clicked => {leading_clicked()}
+                leading_button_clicked => {leading_clicked()}
             }
 
         }
