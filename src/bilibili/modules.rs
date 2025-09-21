@@ -209,3 +209,93 @@ impl AudioQuality {
         }
     }
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Collection {
+    pub info: CollectionInfo,
+    pub upper: Upper,
+    // medias:
+}
+
+impl Collection {
+    pub fn from_json(json: Value) -> Option<Collection> {
+        Some(
+            Collection { 
+                info: CollectionInfo::from_json(json["info"].clone())?, 
+                upper: Upper::from_json(json["info"]["upper"].clone())?, 
+            }
+        )
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct CollectionInfo {
+    pub id: i64,
+    pub fid: i64,
+    pub mid: i64,
+    pub title: String,
+    pub cover: String,
+    pub ctime: i64,
+    pub count: i64, // media_count
+}
+
+impl CollectionInfo {
+    pub fn from_json(json: Value) -> Option<CollectionInfo> {
+        Some(
+            CollectionInfo { 
+                id: json["id"].as_i64()?, 
+                fid: json["fid"].as_i64()?, 
+                mid: json["mid"].as_i64()?, 
+                title: json["title"].as_str()?.to_string(), 
+                cover: json["cover"].as_str()?.to_string(), 
+                ctime: json["ctime"].as_i64()?, 
+                count: json["media_count"].as_i64()?,
+            }
+        )
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub enum CollectionMediaType {
+    Video,
+    Audio,
+    List,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct CollectionMedia {
+    id: i64, // av / au / list id
+    media_type: CollectionMediaType, // 2: video, 12, audio, 21: list
+    bvid: String,
+    title: String,
+    cover: String,
+    intro: String,
+    page: i64,
+    duration: i64,
+    upper: Upper,
+}
+
+impl CollectionMedia {
+    pub fn from_json(json: Value) -> Option<CollectionMedia> {
+        let vtype = match json["id"].as_i64()? {
+            2 => CollectionMediaType::Video,
+            12 => CollectionMediaType::Audio,
+            21 => CollectionMediaType::List,
+            _ => CollectionMediaType::Video,
+        };
+
+        Some(
+            CollectionMedia { 
+                id: json["id"].as_i64()?, 
+                media_type: vtype, 
+                bvid: json["bvid"].as_str()?.to_string(), 
+                title: json["title"].as_str()?.to_string(), 
+                cover: json["cover"].as_str()?.to_string(), 
+                intro: json["intro"].as_str()?.to_string(), 
+                page: json["page"].as_i64()?, 
+                duration: json["duration"].as_i64()?, 
+                upper: Upper::from_json(json["upper"].clone())?,
+            }
+        )
+    }
+}

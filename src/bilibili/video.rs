@@ -32,7 +32,7 @@ impl Video {
         )
     }
     pub async fn get_player_info(&self, bvid: String, cid: i64) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
-        let player_info = get_player_information(bvid, cid).await?;
+        let player_info = get_player_information(bvid, cid, "".to_string()).await?;
         Ok(
             Self {
                 player_info: Some(player_info),
@@ -117,7 +117,7 @@ async fn get_video_details(
 }
 
 // get web player data
-async fn get_player_information(bvid: String, cid: i64) -> Result<PlayerInfo, Box<dyn std::error::Error + Send + Sync>> {
+async fn get_player_information(bvid: String, cid: i64, sessdata: String) -> Result<PlayerInfo, Box<dyn std::error::Error + Send + Sync>> {
     // Create client
     let client = Client::new();
     let wbi = get_wbi_keys().await.unwrap(); // TODO: Move to global
@@ -130,8 +130,6 @@ async fn get_player_information(bvid: String, cid: i64) -> Result<PlayerInfo, Bo
         ],
         wbi,
     );
-
-    let sessdata = "b5e67494%2C1768908938%2C4b0ee%2A72CjCaQ4sSvAvGDflEA0itHWwEQjvHIgYr2_Dm6fhHcLX5JVaTDKBS4whM7JbRYeCdmNwSVjhmNkZKTXpNRGtpb3J3NWEzaGlLSFh5RG9Ld3gzVjM5RVltNlJYUXNyOTVlQnRZb2JRU0xNSWhSX21GX2VOUXpxU2dyaVFjR1U0a1NzUVNSNUhqVm53IIEC";
 
     // Write into url and send request
     let url = "https://api.bilibili.com/x/player/wbi/v2";
