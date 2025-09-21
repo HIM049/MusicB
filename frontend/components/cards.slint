@@ -1,0 +1,23 @@
+import { FocusTouchArea } from "../../material-components/ui/components/state_layer.slint";
+import { FilledCard } from "../../material-components/ui/components/card.slint";
+import { Ripple, MaterialPalette } from "../../material-components/material.slint";
+
+export component RippleFilledCard inherits FilledCard {
+    in property <bool> enabled: true;
+
+    // 加上 Ripple 和 TouchArea
+    touch_area := FocusTouchArea {
+        width: 100%;
+        height: 100%;
+        clicked => {root.clicked()}
+    }
+
+    if enabled && (touch_area.pressed || touch_area.enter_pressed) : Ripple {
+        pressed_x: touch_area.pressed_x;
+        pressed_y: touch_area.pressed_y;
+        width: 100%;
+        height: 100%;
+        color: MaterialPalette.on_surface;
+        clip_ripple: true;
+    }
+}
