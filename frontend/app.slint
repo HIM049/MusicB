@@ -1,16 +1,16 @@
-import { MaterialWindow, MaterialWindowAdapter, NavigationDrawer } from "../material-components//material.slint";
+import { MaterialWindow, MaterialWindowAdapter, NavigationDrawer, Dialog, MaterialText, SegmentedButton } from "../material-components/material.slint";
 import { MainWindowAdapter } from "./main_window_adapter.slint";
 import { FilledIcons, OutlinedIcons } from "./icons.slint";
-import { SmallAppBar } from "../material-components/ui/components/app_bar.slint";
 import { Sidebar } from "./components/sidebar.slint";
 import { SpaceView } from "views/space_view.slint";
 import { DownloadView, VideoInfo } from "views/download_view.slint";
 import { SettingsView } from "views/settings_view.slint";
+import { Button } from "std-widgets.slint";
+import { TextField } from "../material-components/ui/components/text_field.slint";
 
 export component MainWindow inherits MaterialWindow {
-    callback get_bili_information(string);
+    callback query_bili_info(int, string);
     callback switch_watcher(bool) -> bool;
-    callback start_download();
     private property <bool> settings-enable-watcher;
     private property <string> bvid;
     in property <bool> showInfo;
@@ -18,7 +18,7 @@ export component MainWindow inherits MaterialWindow {
     in property <VideoInfo> videoInfo;
     in property <image> inputImage;
 
-
+    title: "TypeMusic";
     preferred-width: 800px;
     preferred-height: 600px;
     background: MainWindowAdapter.background;
@@ -38,13 +38,7 @@ export component MainWindow inherits MaterialWindow {
             videoInfo: videoInfo;
             videoImage: inputImage;
 
-            buttonClicked => {
-                get_bili_information(bvid);
-            }
-
-            startDownload => {
-                start_download();
-            }
+            query_info(queryType, input) => {query_bili_info(queryType, input)}
         }
         if tab-index == 1: SpaceView{}
         if tab-index == 2: SettingsView {
@@ -54,4 +48,39 @@ export component MainWindow inherits MaterialWindow {
             }
         }
     }
+
+    
+    dialog := Dialog {
+        width: 800px;
+        height: 600px;
+        title: "Add Task";
+        default_action_text: "Submit";
+        actions: ["Cancel"];
+        // close-policy: no-auto-close;
+
+        VerticalLayout {
+
+            MaterialText {text: "select a type of your query";}
+            SegmentedButton {
+                items: [
+                    {text: "BVID",},
+                    {text: "AVID",}
+                ];
+            }
+            TextField {
+                // text <=> userInput;
+                label: "BVID";
+                vertical-stretch: 0;
+            }
+        }
+        default_action_clicked => {
+            dialog.close();
+        }
+        action_clicked(index) => {
+            self.close();
+        }
+
+    }
+
+
 }

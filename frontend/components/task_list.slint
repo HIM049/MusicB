@@ -1,0 +1,40 @@
+import { FilledCard, ListView, ListTile, MaterialText } from "../../material-components/material.slint";
+import { FilledIcons, OutlinedIcons } from "../icons.slint";
+
+struct ListItem {
+    title: string,
+    subtitle: string,
+    cover: image,
+}
+
+export component TaskList {
+    in property <[ListItem]> items;
+    in property <string> placeholder_text: "No content";
+
+    FilledCard {
+        width: 100%;
+        height: 100%;
+        if items.length == 0 : MaterialText {
+            text: placeholder_text;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        if items.length != 0 : ListView {
+            height: 100%;
+            horizontal_scrollbar_policy: always-off;
+
+            for item[index] in items : ListTile {
+                text: item.title;
+                supporting-text: item.subtitle;
+                avatar_icon: item.cover;
+                
+                HorizontalLayout {
+                    padding: 10px;
+                    spacing: 10px;
+                    MaterialText {text: index;}  
+                    MaterialText {text: "OK";}
+                }
+            }
+        }
+    }
+}

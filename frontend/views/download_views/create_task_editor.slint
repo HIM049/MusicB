@@ -1,0 +1,38 @@
+import { FilledIcons, OutlinedIcons } from "../../icons.slint";
+import { FrameViewVertical } from "../../components/frame_view.slint";
+import { FilterChip, TextButton, FloatingActionButton } from "../../../material-components/material.slint";
+import { TaskList } from "../../components/task_list.slint";
+
+
+export component CreateTaskEditor {
+    // Status
+    
+    callback leading_clicked(); // back button
+
+    width: 100%;
+    height: 100%;
+
+    VerticalLayout {
+        width: 70%;
+        spacing: 10px;
+
+        HorizontalLayout {
+            spacing: 10px;
+
+
+            FilterChip {
+                text: "Video Parts";
+                height: 30px;
+            }
+            Rectangle {}
+        }
+        
+        TaskList {
+            height: 400px;
+            items: [
+                {title: "shit", cover: FilledIcons.image,},
+                {title: "shit2", cover: OutlinedIcons.image,},
+            ];
+        }
+    }
+}

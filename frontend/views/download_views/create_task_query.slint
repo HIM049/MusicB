@@ -1,0 +1,147 @@
+import { FilledIcons } from "../../icons.slint";
+import { FrameViewVertical } from "../../components/frame_view.slint";
+import { MaterialText, FilledCard, SegmentedButton, TextField, FilledButton } from "../../../material-components/material.slint";
+
+// struct VideoInfo {
+//     Title: string,
+//     Bvid: string,
+//     Cid: int,
+//     Cover: image,
+//     Author: string,
+//     Count: int,
+//     Tname: string,
+//     Publish: int,
+//     Describe: string,
+// }
+
+struct CardInfo {
+    Title: string,
+    Bvid: string,
+    Cover: image,
+    Author: string,
+    Count: int,
+}
+
+// The label for info card
+component Label {
+    in property <string> label;
+    in property <string> value;
+    HorizontalLayout {
+        spacing: 5px;
+        MaterialText {
+            text: label;
+            font-weight: 600;
+        }
+        MaterialText {text: value;}
+        Rectangle {}
+    }
+}
+
+export component CreateTaskQuery {
+    // Status
+    private property <bool> isShowingInfo;
+    private property <bool> isQuerying;
+    private property <int> queryType;
+    private property <string> userInput;
+    private property <CardInfo> CardInfo;
+    
+    callback query_info(int, string);
+    callback query_finished(CardInfo);
+    callback add_to_list();
+    callback leading_clicked(); // back button
+
+    VerticalLayout {
+        spacing: 10px;
+        FilledCard {
+            width: 60%;
+            VerticalLayout {
+                padding: 20px;
+                spacing: 10px;
+                MaterialText {
+                    text: "Query";
+                    font-size: 18px;
+                    font-weight: 700;
+                }
+                HorizontalLayout {
+                    SegmentedButton {
+                        items: [
+                            {text: "BVID",},
+                            {text: "Collect",},
+                        ];
+                        current_index <=> queryType;
+                    }
+                    Rectangle {}
+                }
+                TextField {
+                    text <=> userInput;
+                    label: "ID";
+                    vertical-stretch: 0;
+                }
+                FilledButton {
+                    text: "Query";
+                    vertical-stretch: 0;
+                    icon: FilledIcons.search;
+                    enabled: !isQuerying;
+                    
+                    clicked => {
+                        isQuerying = true;
+                        query_info(queryType, userInput);
+                    }
+                }
+            }
+        }
+
+        // Infomation card
+        if isShowingInfo : FilledCard {
+            VerticalLayout {
+                padding: 20px;
+                spacing: 10px;
+
+                MaterialText {
+                    text: "Information";
+                    font-size: 18px;
+                    font-weight: 650;
+                }
+                HorizontalLayout {
+                    Image {
+                        width: 40%;
+                        
+                        source: CardInfo.Cover;
+                    }
+                    Rectangle {}
+                    VerticalLayout {
+                        Label {
+                            label: "Title";
+                            value: CardInfo.Title;
+                        }
+                        Label {
+                            label: "Author";
+                            value: CardInfo.Author;
+                        }
+                        Label {
+                            label: "Count";
+                            value: CardInfo.Count;
+                        }
+                    }
+                }
+
+                FilledButton {
+                    text: "Confirm";
+                    icon: FilledIcons.add;
+                    clicked => {add_to_list()}
+                }
+            }
+            // CircularProgressIndicator {
+            //     indeterminate: true;
+            //     value: 0.3;
+            // }
+        }
+    }
+
+    query_finished(newInfo) => {
+        CardInfo = newInfo;
+        isQuerying = false;
+        isShowingInfo = true;
+    }
+    
+}

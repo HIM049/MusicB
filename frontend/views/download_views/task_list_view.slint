@@ -1,0 +1,81 @@
+import { FrameViewVertical } from "../../components/frame_view.slint";
+import { RippleFilledCard } from "../../components/cards.slint";
+import { TaskList } from "../../components/task_list.slint";
+import { ListView } from "std-widgets.slint";
+import { FilledIcons, OutlinedIcons } from "../../icons.slint";
+import { Ripple, MaterialPalette, MaterialText, FloatingActionButton, Icon } from "../../../material-components/material.slint";
+import { FilterChip } from "../../../material-components/ui/components/chip.slint";
+
+export component TaskListView {
+    width: 100%;
+    height: 100%;
+
+    callback OnCreateTask();
+
+    FrameViewVertical {
+        title: "Download";
+
+        // Buttons bar
+        VerticalLayout {
+            width: 70%;
+            spacing: 10px;
+
+            HorizontalLayout {
+                spacing: 10px;
+                FilterChip {
+                    text: "Done";
+                    height: 30px;
+                }
+                FilterChip {
+                    text: "Failed";
+                    height: 30px;
+                }
+                Rectangle {}
+            }
+
+            RippleFilledCard {
+                clickable: true;
+                HorizontalLayout {
+                    padding: 15px;
+                    spacing: 10px;
+                    alignment: center;
+                    Icon {
+                        source: FilledIcons.add;
+                    }
+                    MaterialText {
+                        text: "Create Download Tasks";
+                        font-weight: 600;
+                    }
+                }
+                
+                clicked => {OnCreateTask()}
+            }
+
+            TaskList {
+                height: 400px;
+                items: [];
+            }
+
+            // Rectangle {
+            //     background: #ccc;
+
+            //     TaskList {}
+            // }
+        }
+        Rectangle {
+            vertical-stretch: 1;
+        }
+    }
+    
+
+    FloatingActionButton {
+        text: "Download";
+        icon: FilledIcons.play_arrow;
+        style: standard;
+        x: parent.width - self.width - 16px;
+        y: parent.height - self.height - 16px;
+        clicked => {
+            // showDialog();
+        }
+    }
+}
