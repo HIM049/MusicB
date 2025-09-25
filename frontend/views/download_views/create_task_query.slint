@@ -1,6 +1,7 @@
 import { FilledIcons } from "../../icons.slint";
 import { FrameViewVertical } from "../../components/frame_view.slint";
 import { MaterialText, FilledCard, SegmentedButton, TextField, FilledButton } from "../../../material-components/material.slint";
+import { QueryCardInfo } from "../../modules.slint";
 
 // struct VideoInfo {
 //     Title: string,
@@ -13,14 +14,6 @@ import { MaterialText, FilledCard, SegmentedButton, TextField, FilledButton } fr
 //     Publish: int,
 //     Describe: string,
 // }
-
-struct CardInfo {
-    Title: string,
-    Bvid: string,
-    Cover: image,
-    Author: string,
-    Count: int,
-}
 
 // The label for info card
 component Label {
@@ -39,14 +32,13 @@ component Label {
 
 export component CreateTaskQuery {
     // Status
-    private property <bool> isShowingInfo;
-    private property <bool> isQuerying;
+    in-out property <bool> is_info_showing;
+    in-out property <bool> is_querying;
+    in-out property <QueryCardInfo> query_card_info;
     private property <int> queryType;
     private property <string> userInput;
-    private property <CardInfo> CardInfo;
     
     callback query_info(int, string);
-    callback query_finished(CardInfo);
     callback add_to_list();
     callback leading_clicked(); // back button
 
@@ -57,16 +49,14 @@ export component CreateTaskQuery {
             VerticalLayout {
                 padding: 20px;
                 spacing: 10px;
-                MaterialText {
-                    text: "Query";
-                    font-size: 18px;
-                    font-weight: 700;
-                }
+
+                // Card title
+                MaterialText { text: @tr("Query"); font-size: 18px; font-weight: 600; }
                 HorizontalLayout {
                     SegmentedButton {
                         items: [
-                            {text: "BVID",},
-                            {text: "Collect",},
+                            {text: @tr("BVID"),},
+                            {text: @tr("Collect"),},
                         ];
                         current_index <=> queryType;
                     }
@@ -74,17 +64,17 @@ export component CreateTaskQuery {
                 }
                 TextField {
                     text <=> userInput;
-                    label: "ID";
+                    label: @tr("Please input ID");
                     vertical-stretch: 0;
                 }
                 FilledButton {
-                    text: "Query";
+                    text: @tr("Query");
                     vertical-stretch: 0;
                     icon: FilledIcons.search;
-                    enabled: !isQuerying;
+                    enabled: !is_querying;
                     
                     clicked => {
-                        isQuerying = true;
+                        is_querying = true;
                         query_info(queryType, userInput);
                     }
                 }
@@ -92,13 +82,13 @@ export component CreateTaskQuery {
         }
 
         // Infomation card
-        if isShowingInfo : FilledCard {
+        if is_info_showing : FilledCard {
             VerticalLayout {
                 padding: 20px;
                 spacing: 10px;
 
                 MaterialText {
-                    text: "Information";
+                    text: @tr("Information");
                     font-size: 18px;
                     font-weight: 650;
                 }
@@ -106,27 +96,27 @@ export component CreateTaskQuery {
                     Image {
                         width: 40%;
                         
-                        source: CardInfo.Cover;
+                        source: query_card_info.cover;
                     }
                     Rectangle {}
                     VerticalLayout {
                         Label {
-                            label: "Title";
-                            value: CardInfo.Title;
+                            label: @tr("Title");
+                            value: query_card_info.title;
                         }
                         Label {
-                            label: "Author";
-                            value: CardInfo.Author;
+                            label: @tr("Author");
+                            value: query_card_info.author;
                         }
                         Label {
-                            label: "Count";
-                            value: CardInfo.Count;
+                            label: @tr("Count");
+                            value: query_card_info.count;
                         }
                     }
                 }
 
                 FilledButton {
-                    text: "Confirm";
+                    text: @tr("Confirm");
                     icon: FilledIcons.add;
                     clicked => {add_to_list()}
                 }
@@ -137,11 +127,4 @@ export component CreateTaskQuery {
             // }
         }
     }
-
-    query_finished(newInfo) => {
-        CardInfo = newInfo;
-        isQuerying = false;
-        isShowingInfo = true;
-    }
-    
 }

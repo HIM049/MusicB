@@ -4,6 +4,8 @@ import { FrameView, FrameViewVertical } from "../components/frame_view.slint";
 import { FilledIcons } from "../icons.slint";
 import { TaskListView } from "download_views/task_list_view.slint";
 import { CreateTaskView } from "download_views/create_task_view.slint";
+import { QueryCardInfo } from "../modules.slint";
+import { ListItem } from "../components/task_list.slint";
 
 export struct VideoInfo {
     title: string,
@@ -13,25 +15,38 @@ export struct VideoInfo {
 }
 
 export component DownloadView {
-    in-out property <string> userInput;
-    in property <bool> isShowInfo;
-    in property <VideoInfo> videoInfo;
-    in property <image> videoImage;
-    callback query_info(int, string);
-    callback query_finished();
-
     private property <int> viewIndex: 0;
 
+    // Property for Query view
+    in-out property <bool> query_is_info_showing;
+    in-out property <bool> query_is_querying;
+    in-out property <QueryCardInfo> query_card;
+    callback query_info(int, string);
+    // Property for Editor view
+    in-out property <bool> is_include_parts;
+    in-out property <bool> is_creating;
+    in-out property <[ListItem]> task_item_list;
+    callback add_to_list();
+
+
     if viewIndex == 0 : TaskListView {
-        OnCreateTask => {
+        on_create_task => {
             viewIndex = 1;
         }
     } // Task List View
+
     if viewIndex == 1 : CreateTaskView {
-        leading_clicked => {
-            viewIndex = 0;
-        }
+        // Property for Query view
+        query_is_info_showing <=> root.query_is_info_showing;
+        query_is_querying <=> root.query_is_querying;
+        query_card: root.query_card;
+        // Property for Editor view
+        is_include_parts <=> root.is_include_parts;
+        is_creating <=> root.is_creating;
+        task_item_list: root.task_item_list;
         query_info(queryType, input) => {query_info(queryType, input)}
+        add_to_list => {root.add_to_list()}
+        leading_clicked => { viewIndex = 0; }
     } // Create List View
 
 }

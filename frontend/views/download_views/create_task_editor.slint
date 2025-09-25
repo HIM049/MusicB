@@ -1,13 +1,13 @@
 import { FilledIcons, OutlinedIcons } from "../../icons.slint";
 import { FrameViewVertical } from "../../components/frame_view.slint";
 import { FilterChip, TextButton, FloatingActionButton } from "../../../material-components/material.slint";
-import { TaskList } from "../../components/task_list.slint";
+import { TaskList, ListItem } from "../../components/task_list.slint";
 
 
 export component CreateTaskEditor {
     // Status
-    
-    callback leading_clicked(); // back button
+    in-out property <[ListItem]> task_item_list;
+    in-out property <bool> is_include_parts;
 
     width: 100%;
     height: 100%;
@@ -19,20 +19,17 @@ export component CreateTaskEditor {
         HorizontalLayout {
             spacing: 10px;
 
-
             FilterChip {
-                text: "Video Parts";
+                text: @tr("Video Parts");
                 height: 30px;
+                checked <=> is_include_parts;
             }
             Rectangle {}
         }
         
         TaskList {
             height: 400px;
-            items: [
-                {title: "shit", cover: FilledIcons.image,},
-                {title: "shit2", cover: OutlinedIcons.image,},
-            ];
+            items: task_item_list;
         }
     }
 }

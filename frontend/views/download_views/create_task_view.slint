@@ -3,6 +3,8 @@ import { FrameViewVertical } from "../../components/frame_view.slint";
 import { MaterialText, FilledCard, TextField, FilledButton, TextButton, FloatingActionButton } from "../../../material-components/material.slint";
 import { CreateTaskQuery } from "../../views/download_views/create_task_query.slint";
 import { CreateTaskEditor } from "../../views/download_views/create_task_editor.slint";
+import { QueryCardInfo } from "../../modules.slint";
+import { ListItem } from "../../components/task_list.slint";
 
 struct VideoInfo {
     Title: string,
@@ -16,25 +18,19 @@ struct VideoInfo {
     Describe: string,
 }
 
-struct CardInfo {
-    Title: string,
-    Bvid: string,
-    Cover: image,
-    Author: string,
-    Count: int,
-}
-
 export component CreateTaskView {
     // Status
-    private property <bool> isShowingInfo;
-    private property <bool> isQuerying;
-    private property <string> userInput;
-    private property <CardInfo> CardInfo;
-
     private property <int> index: 1;
+
+    in-out property <bool> query_is_info_showing;
+    in-out property <bool> query_is_querying;
+    in-out property <QueryCardInfo> query_card;
+
+    in-out property <bool> is_include_parts: true;
+    in-out property <[ListItem]> task_item_list;
+    in-out property <bool> is_creating;
     
     callback query_info(int, string);
-    callback query_finished(CardInfo);
     callback add_to_list();
     callback leading_clicked(); // back button
 
@@ -57,30 +53,27 @@ export component CreateTaskView {
         }
 
         if index == 0 : CreateTaskQuery {
+            is_info_showing <=> query_is_info_showing;
+            is_querying <=> query_is_querying;
+            query_card_info: query_card;
             query_info(queryType, input) => {query_info(queryType, input)}
         }
-
-        if index == 1 : CreateTaskEditor {}
+        if index == 1 : CreateTaskEditor {
+            task_item_list: root.task_item_list;
+            is_include_parts <=> root.is_include_parts;
+        }
         
         Rectangle {}
     }
-
-    query_finished(newInfo) => {
-        CardInfo = newInfo;
-        isQuerying = false;
-        isShowingInfo = true;
-    }
-
     
-    if index == 1 : FloatingActionButton {
+    // Create task button
+    if index == 1 && !is_creating : FloatingActionButton {
         text: "Create";
         icon: FilledIcons.add;
         style: standard;
         x: parent.width - self.width - 16px;
         y: parent.height - self.height - 16px;
-        clicked => {
-            // showDialog();
-        }
+        clicked => {add_to_list()}
     }
-    
+
 }

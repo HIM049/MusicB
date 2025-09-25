@@ -7,17 +7,32 @@ import { DownloadView, VideoInfo } from "views/download_view.slint";
 import { SettingsView } from "views/settings_view.slint";
 import { Button } from "std-widgets.slint";
 import { TextField } from "../material-components/ui/components/text_field.slint";
+import { QueryCardInfo } from "./modules.slint";
+import { ListItem } from "./components/task_list.slint";
 
 export component MainWindow inherits MaterialWindow {
+    // Download page -> Query view
+    private property <bool> query_is_info_showing;
+    private property <bool> query_is_querying;
+    private property <QueryCardInfo> query_card;
     callback query_bili_info(int, string);
+    callback query_bili_info_finish(QueryCardInfo);
+    query_bili_info_finish(info) => {
+        query_is_querying = false;
+        query_is_info_showing = true;
+        query_card = info;
+    }
+
+    // Download page -> Editor view
+    in-out property <bool> is_include_parts: true;
+    in-out property <bool> is_creating;
+    in-out property <[ListItem]> task_item_list: [];
+    callback add_to_list();
+
     callback switch_watcher(bool) -> bool;
     private property <bool> settings-enable-watcher;
-    private property <string> bvid;
-    in property <bool> showInfo;
-    in property <string> videoTitle;
-    in property <VideoInfo> videoInfo;
-    in property <image> inputImage;
 
+    tab-index: 0;
     title: "TypeMusic";
     preferred-width: 800px;
     preferred-height: 600px;
@@ -32,13 +47,16 @@ export component MainWindow inherits MaterialWindow {
         }
         
         // Switch Tabs
-        if tab-index == 0: DownloadView {
-            userInput <=> bvid;
-            isShowInfo: showInfo;
-            videoInfo: videoInfo;
-            videoImage: inputImage;
-
+        if tab-index == 0 : DownloadView {
+            query_is_info_showing <=> root.query_is_info_showing;
+            query_is_querying <=> root.query_is_querying;
+            query_card: root.query_card;
             query_info(queryType, input) => {query_bili_info(queryType, input)}
+
+            is_include_parts <=> root.is_include_parts;
+            is_creating <=> root.is_creating;
+            task_item_list: root.task_item_list;
+            add_to_list => {root.add_to_list()}
         }
         if tab-index == 1: SpaceView{}
         if tab-index == 2: SettingsView {

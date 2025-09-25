@@ -10,7 +10,7 @@ export component TaskListView {
     width: 100%;
     height: 100%;
 
-    callback OnCreateTask();
+    callback on_create_task();
 
     FrameViewVertical {
         title: "Download";
@@ -47,20 +47,14 @@ export component TaskListView {
                         font-weight: 600;
                     }
                 }
-                
-                clicked => {OnCreateTask()}
+                clicked => {on_create_task()}
             }
 
             TaskList {
+                // height: root.height - 200px;
                 height: 400px;
                 items: [];
             }
-
-            // Rectangle {
-            //     background: #ccc;
-
-            //     TaskList {}
-            // }
         }
         Rectangle {
             vertical-stretch: 1;
