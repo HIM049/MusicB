@@ -11,6 +11,7 @@ import { QueryCardInfo } from "./modules.slint";
 import { ListItem } from "./components/task_list.slint";
 
 export component MainWindow inherits MaterialWindow {
+    private property <int> crate_task_view_index;
     // Download page -> Query view
     private property <bool> query_is_info_showing;
     private property <bool> query_is_querying;
@@ -18,16 +19,22 @@ export component MainWindow inherits MaterialWindow {
     callback query_bili_info(int, string);
     callback query_bili_info_finish(QueryCardInfo);
     query_bili_info_finish(info) => {
+        query_card = info;
         query_is_querying = false;
         query_is_info_showing = true;
-        query_card = info;
     }
 
     // Download page -> Editor view
     in-out property <bool> is_include_parts: true;
     in-out property <bool> is_creating;
     in-out property <[ListItem]> task_item_list: [];
-    callback add_to_list();
+    callback add_to_temp_list();
+    callback add_to_temp_list_finish([ListItem]);
+    callback add_to_create();
+    add_to_temp_list_finish(list) => {
+        task_item_list = list;
+        crate_task_view_index = 1;
+    }
 
     callback switch_watcher(bool) -> bool;
     private property <bool> settings-enable-watcher;
@@ -48,6 +55,8 @@ export component MainWindow inherits MaterialWindow {
         
         // Switch Tabs
         if tab-index == 0 : DownloadView {
+            crate_task_view_index <=> root.crate_task_view_index;
+
             query_is_info_showing <=> root.query_is_info_showing;
             query_is_querying <=> root.query_is_querying;
             query_card: root.query_card;
@@ -56,7 +65,8 @@ export component MainWindow inherits MaterialWindow {
             is_include_parts <=> root.is_include_parts;
             is_creating <=> root.is_creating;
             task_item_list: root.task_item_list;
-            add_to_list => {root.add_to_list()}
+            add_to_temp_list => {root.add_to_temp_list()}
+            add_to_create => {root.add_to_create()}
         }
         if tab-index == 1: SpaceView{}
         if tab-index == 2: SettingsView {
@@ -97,8 +107,5 @@ export component MainWindow inherits MaterialWindow {
         action_clicked(index) => {
             self.close();
         }
-
     }
-
-
 }

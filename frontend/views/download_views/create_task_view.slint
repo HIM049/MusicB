@@ -20,7 +20,7 @@ struct VideoInfo {
 
 export component CreateTaskView {
     // Status
-    private property <int> index: 1;
+    in-out property <int> index: 0;
 
     in-out property <bool> query_is_info_showing;
     in-out property <bool> query_is_querying;
@@ -31,7 +31,8 @@ export component CreateTaskView {
     in-out property <bool> is_creating;
     
     callback query_info(int, string);
-    callback add_to_list();
+    callback add_to_temp_list();
+    callback add_to_create();
     callback leading_clicked(); // back button
 
     width: 100%;
@@ -57,6 +58,7 @@ export component CreateTaskView {
             is_querying <=> query_is_querying;
             query_card_info: query_card;
             query_info(queryType, input) => {query_info(queryType, input)}
+            add_to_temp_list => {add_to_temp_list()}
         }
         if index == 1 : CreateTaskEditor {
             task_item_list: root.task_item_list;
@@ -73,7 +75,7 @@ export component CreateTaskView {
         style: standard;
         x: parent.width - self.width - 16px;
         y: parent.height - self.height - 16px;
-        clicked => {add_to_list()}
+        clicked => {add_to_create()}
     }
 
 }

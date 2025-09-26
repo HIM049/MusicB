@@ -17,6 +17,7 @@ export struct VideoInfo {
 export component DownloadView {
     private property <int> viewIndex: 0;
 
+    in-out property <int> crate_task_view_index;
     // Property for Query view
     in-out property <bool> query_is_info_showing;
     in-out property <bool> query_is_querying;
@@ -26,7 +27,8 @@ export component DownloadView {
     in-out property <bool> is_include_parts;
     in-out property <bool> is_creating;
     in-out property <[ListItem]> task_item_list;
-    callback add_to_list();
+    callback add_to_temp_list();
+    callback add_to_create();
 
 
     if viewIndex == 0 : TaskListView {
@@ -36,6 +38,7 @@ export component DownloadView {
     } // Task List View
 
     if viewIndex == 1 : CreateTaskView {
+        index <=> crate_task_view_index;
         // Property for Query view
         query_is_info_showing <=> root.query_is_info_showing;
         query_is_querying <=> root.query_is_querying;
@@ -45,7 +48,8 @@ export component DownloadView {
         is_creating <=> root.is_creating;
         task_item_list: root.task_item_list;
         query_info(queryType, input) => {query_info(queryType, input)}
-        add_to_list => {root.add_to_list()}
+        add_to_temp_list => {root.add_to_temp_list()}
+        add_to_create => {root.add_to_create()}
         leading_clicked => { viewIndex = 0; }
     } // Create List View
 

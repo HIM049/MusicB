@@ -40,28 +40,35 @@ async fn get_collection_details(mid: i64, ps: i64, pn: i64, sessdata: String) ->
 
     let json_resp: Value = serde_json::from_str(resp.text().await?.as_str())?;
 
+    // Check response code
+    if json_resp["code"].as_i64().unwrap_or(1) != 0 {
+        return Err(format!(
+            "Failed when request: {}",
+            json_resp["message"].as_str().unwrap()
+        )
+        .into());
+    }
+
     Ok(json_resp)
 }
 
 
-    pub async fn get_collection_list(mid: i64) -> Result<Vec<CollectionMedia>, Box<dyn std::error::Error + Send + Sync>> {
-        let mut index = 1;
-        let mut media_list: Vec<CollectionMedia> = vec![];
-        
-        loop {
-            let value = get_collection_details(mid, 20, index, "".to_string()).await?;
-            if let Some(medias) = value["data"]["medias"].as_array() {
-                for media in medias.iter() {
-                    if let Some(media) = CollectionMedia::from_json(media.clone()) {
-                        media_list.push(media);
-                    }
+pub async fn get_collection_list(mid: i64) -> Result<Vec<CollectionMedia>, Box<dyn std::error::Error + Send + Sync>> {
+    let mut index = 1;
+    let mut media_list: Vec<CollectionMedia> = vec![];
+
+    loop {
+        let value = get_collection_details(mid, 20, index, "".to_string()).await?;
+        if let Some(medias) = value["data"]["medias"].as_array() {
+            for media in medias.iter() {
+                if let Some(media) = CollectionMedia::from_json(media.clone()) {
+                    media_list.push(media);
                 }
-            } else {
-                break;
             }
-
-            index += 1;
+        } else {
+            break;
         }
-
-        Ok(media_list)
+        index += 1;
     }
+    Ok(media_list)
+}

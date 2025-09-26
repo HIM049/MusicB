@@ -11,8 +11,9 @@ pub struct Video {
     pub player_info: Option<PlayerInfo>,
     pub stream: Option<BiliStream>,
     pub flac_stream: Option<BiliStream>,
-    pub meta: Option<Meta>,
+    // pub meta: Option<Meta>,
     pub upper: Upper,
+    pub parts: Vec<VideoPart>
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -88,6 +89,7 @@ impl PlayerInfo {
     }
 }
 
+// 字幕信息
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Subtitle {
     id: i64,
@@ -146,29 +148,6 @@ impl BiliStream {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-// 
-pub struct Meta {
-    pub title: String,
-    pub cover_url: String, // Turn to cover image?
-    pub author: String,
-    pub lyrics_path: String, // data.subtitle.list[0]. id / lan字幕语言 / lan_doc字幕语言名称 / is_lock / author_mid / subtitle_url
-}
-
-impl Meta {
-    pub fn from_json(json: Value) -> Option<Self> {
-        Some(
-            //TODO: Waiting for refactor
-            Meta {
-                title: json["title"].as_str()?.to_string(),
-                cover_url: json["pic"].as_str()?.to_string(),
-                author: json["title"].as_str()?.to_string(),
-                lyrics_path: "".to_string(),
-            }
-        )
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Upper {
     pub mid: i64,
     pub name: String,
@@ -184,6 +163,42 @@ impl Upper {
                 avatar: json["face"].as_str()?.to_string(),
             }
         )
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct VideoPart {
+    pub cid: i64,
+    pub page: i64,
+    pub title: String,
+    pub duration: i64,
+}
+
+impl VideoPart {
+    pub fn from_json(json: Value) -> Option<Self> {
+        Some(
+            Self { 
+                cid: json["cid"].as_i64()?, 
+                page: json["page"].as_i64()?, 
+                title: json["part"].as_str()?.to_string(), 
+                duration: json["cid"].as_i64()?, 
+            }
+        )
+    }
+
+    pub fn from_json_array(json: Value) -> Vec<Self> {
+        let mut part_list: Vec<Self> = vec![];
+        if let Some(parts) = json.as_array() {
+            for part in parts {
+                if let Some(current) = Self::from_json(part.clone()) {
+                        part_list.push(current);
+                }
+                // TODO: log err
+            }
+        }
+        // TODO: log err
+
+        part_list
     }
 }
 
@@ -266,6 +281,7 @@ pub enum CollectionMediaType {
 pub struct CollectionMedia {
     id: i64, // av / au / list id
     media_type: CollectionMediaType, // 2: video, 12, audio, 21: list
+    attr: bool,
     bvid: String,
     title: String,
     cover: String,
@@ -288,6 +304,7 @@ impl CollectionMedia {
             CollectionMedia { 
                 id: json["id"].as_i64()?, 
                 media_type: vtype, 
+                attr: json["attr"].as_i64()? == 0,
                 bvid: json["bvid"].as_str()?.to_string(), 
                 title: json["title"].as_str()?.to_string(), 
                 cover: json["cover"].as_str()?.to_string(), 

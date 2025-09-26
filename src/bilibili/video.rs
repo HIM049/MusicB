@@ -4,7 +4,7 @@ use reqwest::{header, Client};
 use serde_json::Value;
 
 use crate::bilibili::{
-    downloader::stream_downloader, modules::{BiliInfo, BiliStream, PlayerInfo, Upper, Video}, utils, wbi_generater::{encode_wbi, get_wbi_keys}
+    downloader::stream_downloader, modules::{BiliInfo, BiliStream, PlayerInfo, Upper, Video, VideoPart}, utils, wbi_generater::{encode_wbi, get_wbi_keys}
 };
 
 impl Video {
@@ -108,9 +108,8 @@ async fn get_video_details(
         player_info: None,
         stream: None,
         flac_stream: None,
-        meta: None, // TODO: Get meta from other info
-        // meta: Meta::from_json(json_resp["data"].clone()).ok_or(err_msg)?,
         upper: Upper::from_json(json_resp["data"]["owner"].clone()).ok_or(err_msg)?,
+        parts: VideoPart::from_json_array(json_resp["data"]["pages"].clone()),
     };
 
     Ok(video)

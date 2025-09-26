@@ -39,7 +39,7 @@ export component CreateTaskQuery {
     private property <string> userInput;
     
     callback query_info(int, string);
-    callback add_to_list();
+    callback add_to_temp_list();
     callback leading_clicked(); // back button
 
     VerticalLayout {
@@ -118,7 +118,7 @@ export component CreateTaskQuery {
                 FilledButton {
                     text: @tr("Confirm");
                     icon: FilledIcons.add;
-                    clicked => {add_to_list()}
+                    clicked => {add_to_temp_list()}
                 }
             }
             // CircularProgressIndicator {
