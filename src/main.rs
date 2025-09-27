@@ -6,13 +6,14 @@
 
 mod bilibili;
 mod frontend;
+mod handlers;
 use std::{sync::Arc, vec};
 use image::{ImageBuffer, Rgba};
 use once_cell::sync::Lazy;
 use tokio::sync::Mutex;
-use slint::{Image, SharedPixelBuffer, ModelRc, VecModel};
+use slint::{Image, ModelRc, SharedPixelBuffer, VecModel, Weak};
 use bilibili::modules::Video;
-use crate::{bilibili::{task_modules::Task}, frontend::load_image}; 
+use crate::{bilibili::task_modules::Task, frontend::load_image, handlers::{handle_video_info, query_bili_info}}; 
 
 
 slint::include_modules!();
@@ -38,41 +39,20 @@ async fn main() {
     ui.on_query_bili_info(move |query_type, input| {
         println!("on_query_bili_info");
         let ui = handle.clone();
-
         // run async functions
         tokio::spawn(async move {
-            match query_type {
-                0 => {} // video
-                1 => {} // collect
-                _ => {}
-            }
-            let video = Video::from_bvid(input.to_string()).await;
-            let mut app_state = APP_STATE.lock().await;
-            app_state.current_item = if let Ok(v) = video {Some(v)} else {None};
-
-            let cover: Arc<ImageBuffer<Rgba<u8>, Vec<u8>>>;
-            if let Some(item) = &app_state.current_item {
-                cover = Arc::new(load_image(item.info.pic.clone()).await);
-            } else {
-                return;
-            }
-            
-            if let Err(e) = slint::invoke_from_event_loop(move || {
-                if let Some(ui) = ui.upgrade() {
-                    if let Some(video) = app_state.current_item.clone() {
-                        ui.invoke_query_bili_info_finish( QueryCardInfo { 
-                            author: video.upper.name.into(), 
-                            bvid: video.info.bvid.into(), 
-                            count: video.info.videos as i32, 
-                            cover: Image::from_rgba8(SharedPixelBuffer::clone_from_slice(&cover, cover.width(), cover.height())), 
-                            title: video.info.title.into(),
-                        })
-                    }
-                } else {
-                    println!("failed to get weak");
+            let response = query_bili_info(input.to_string(), query_type).await;
+            match response {
+                Ok((video, image_buf)) => {
+                    if let Err(e) = slint::invoke_from_event_loop(move || {
+                        if let Some(ui) = ui.upgrade() {
+                            ui.invoke_query_bili_info_finish(handle_video_info(video, image_buf));
+                        } else {
+                            println!("failed to get weak");
+                        }
+                    }) { println!("{}", e); }
                 }
-            }) {
-                println!("{}", e);
+                Err(e) => {println!("{}", e);}
             }
         });
     });
@@ -130,4 +110,21 @@ async fn main() {
 
     ui.run().expect("Failed to run the main window");
 
+}
+
+/// 一个后台任务执行器：
+/// - 接收一个 `Weak<MainWindow>`（防止 UI 已经销毁）
+/// - 接收一个异步任务 `future`
+/// - 任务执行完毕后，可以安全地在 UI 线程里更新界面
+fn run_in_background<F, Fut>(handle: Arc<Weak<MainWindow>>, future: F)
+where
+    F: FnOnce() -> Fut + Send + 'static,
+    Fut: std::future::Future<Output = ()> + Send + 'static,
+{
+    tokio::spawn(async move {
+        future().await;
+
+        // 如果你需要在 future 里调用 UI，就在 future 内部用
+        // `slint::invoke_from_event_loop`，这里保持纯粹执行。
+    });
 }

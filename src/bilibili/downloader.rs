@@ -6,7 +6,7 @@ use crate::bilibili::utils;
 use futures_util::stream::StreamExt;
 
 
-pub async fn stream_downloader(stream_url: String, save_path: String) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+pub async fn stream_downloader(stream_url: String, save_path: String) -> Result<(), anyhow::Error> {
     let client = Client::new();
     let resp = client.get(stream_url)
         .header(header::REFERER, "https://www.bilibili.com")

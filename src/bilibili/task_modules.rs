@@ -18,7 +18,6 @@ pub struct Task {
 impl Task {
     pub fn from_video(video: Video) -> Vec<Self> {
         let mut task_list: Vec<Self> = vec![];
-
         // create jobs for every part
         for part in video.parts.clone() {
             task_list.push( 

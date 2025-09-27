@@ -1,17 +1,18 @@
+use anyhow::anyhow;
 use reqwest::{header, Client};
 use serde_json::Value;
 
 use crate::bilibili::{modules::{Collection, CollectionMedia}, utils, wbi_generater::{encode_wbi, get_wbi_keys}};
 
 impl Collection {
-    pub async fn from_mid(mid: i64) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn from_mid(mid: i64) -> Result<Self, anyhow::Error> {
         let value = get_collection_details(mid, 1, 1, "".to_string()).await?;
         
-        Ok(Collection::from_json(value["data"].clone()).ok_or("failed when deserialization response")?)
+        Ok(Collection::from_json(value["data"].clone()).ok_or(anyhow!("failed when deserialization response"))?)
     }
 }
 
-async fn get_collection_details(mid: i64, ps: i64, pn: i64, sessdata: String) -> Result<Value, Box<dyn std::error::Error + Send + Sync>> {
+async fn get_collection_details(mid: i64, ps: i64, pn: i64, sessdata: String) -> Result<Value, anyhow::Error> {
     // Create client
     let client = Client::new();
     let wbi = get_wbi_keys().await.unwrap(); // TODO: Move to global
@@ -42,18 +43,17 @@ async fn get_collection_details(mid: i64, ps: i64, pn: i64, sessdata: String) ->
 
     // Check response code
     if json_resp["code"].as_i64().unwrap_or(1) != 0 {
-        return Err(format!(
+        return Err(anyhow!(format!(
             "Failed when request: {}",
             json_resp["message"].as_str().unwrap()
-        )
-        .into());
+        )));
     }
 
     Ok(json_resp)
 }
 
 
-pub async fn get_collection_list(mid: i64) -> Result<Vec<CollectionMedia>, Box<dyn std::error::Error + Send + Sync>> {
+pub async fn get_collection_list(mid: i64) -> Result<Vec<CollectionMedia>, anyhow::Error> {
     let mut index = 1;
     let mut media_list: Vec<CollectionMedia> = vec![];
 
