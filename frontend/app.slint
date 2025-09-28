@@ -13,28 +13,17 @@ import { ListItem } from "./components/task_list.slint";
 export component MainWindow inherits MaterialWindow {
     private property <int> crate_task_view_index;
     // Download page -> Query view
-    private property <bool> query_is_info_showing;
-    private property <bool> query_is_querying;
-    private property <QueryCardInfo> query_card;
+    in property <bool> query_is_info_showing;
+    in property <bool> query_is_querying;
+    in property <QueryCardInfo> query_card;
     callback query_bili_info(int, string);
-    callback query_bili_info_finish(QueryCardInfo);
-    query_bili_info_finish(info) => {
-        query_card = info;
-        query_is_querying = false;
-        query_is_info_showing = true;
-    }
 
     // Download page -> Editor view
-    in-out property <bool> is_include_parts: true;
-    in-out property <bool> is_creating;
-    in-out property <[ListItem]> task_item_list: [];
+    in property <bool> is_include_parts: true;
+    in property <bool> is_creating;
+    in property <[ListItem]> task_item_list: [];
     callback add_to_temp_list();
-    callback add_to_temp_list_finish([ListItem]);
     callback add_to_create();
-    add_to_temp_list_finish(list) => {
-        task_item_list = list;
-        crate_task_view_index = 1;
-    }
 
     callback switch_watcher(bool) -> bool;
     private property <bool> settings-enable-watcher;
@@ -57,13 +46,13 @@ export component MainWindow inherits MaterialWindow {
         if tab-index == 0 : DownloadView {
             crate_task_view_index <=> root.crate_task_view_index;
 
-            query_is_info_showing <=> root.query_is_info_showing;
-            query_is_querying <=> root.query_is_querying;
+            query_is_info_showing: root.query_is_info_showing;
+            query_is_querying: root.query_is_querying;
             query_card: root.query_card;
             query_info(queryType, input) => {query_bili_info(queryType, input)}
 
-            is_include_parts <=> root.is_include_parts;
-            is_creating <=> root.is_creating;
+            is_include_parts: root.is_include_parts;
+            is_creating: root.is_creating;
             task_item_list: root.task_item_list;
             add_to_temp_list => {root.add_to_temp_list()}
             add_to_create => {root.add_to_create()}
@@ -78,34 +67,34 @@ export component MainWindow inherits MaterialWindow {
     }
 
     
-    dialog := Dialog {
-        width: 800px;
-        height: 600px;
-        title: "Add Task";
-        default_action_text: "Submit";
-        actions: ["Cancel"];
-        // close-policy: no-auto-close;
+    // dialog := Dialog {
+    //     width: 800px;
+    //     height: 600px;
+    //     title: "Add Task";
+    //     default_action_text: "Submit";
+    //     actions: ["Cancel"];
+    //     // close-policy: no-auto-close;
 
-        VerticalLayout {
+    //     VerticalLayout {
 
-            MaterialText {text: "select a type of your query";}
-            SegmentedButton {
-                items: [
-                    {text: "BVID",},
-                    {text: "AVID",}
-                ];
-            }
-            TextField {
-                // text <=> userInput;
-                label: "BVID";
-                vertical-stretch: 0;
-            }
-        }
-        default_action_clicked => {
-            dialog.close();
-        }
-        action_clicked(index) => {
-            self.close();
-        }
-    }
+    //         MaterialText {text: "select a type of your query";}
+    //         SegmentedButton {
+    //             items: [
+    //                 {text: "BVID",},
+    //                 {text: "AVID",}
+    //             ];
+    //         }
+    //         TextField {
+    //             // text <=> userInput;
+    //             label: "BVID";
+    //             vertical-stretch: 0;
+    //         }
+    //     }
+    //     default_action_clicked => {
+    //         dialog.close();
+    //     }
+    //     action_clicked(index) => {
+    //         self.close();
+    //     }
+    // }
 }
