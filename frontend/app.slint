@@ -11,14 +11,24 @@ import { QueryCardInfo } from "./modules.slint";
 import { ListItem } from "./components/task_list.slint";
 
 export component MainWindow inherits MaterialWindow {
-    private property <int> crate_task_view_index;
+    title: "TypeMusic";
+    preferred-width: 800px;
+    preferred-height: 600px;
+    background: MainWindowAdapter.background;
+    default-font-family: "Roboto";
+
+
+    in property <int> download_view_index; // index for download view
+    callback on_goto_create_task(); // add task button
+    callback download_back_clicked(); // leading back button for download view
     // Download page -> Query view
-    in property <bool> query_is_info_showing;
+    in property <bool> query_is_info_showing; // query response card
     in property <bool> query_is_querying;
     in property <QueryCardInfo> query_card;
     callback query_bili_info(int, string);
 
     // Download page -> Editor view
+    in property <int> crate_task_view_index;
     in property <bool> is_include_parts: true;
     in property <bool> is_creating;
     in property <[ListItem]> task_item_list: [];
@@ -28,14 +38,8 @@ export component MainWindow inherits MaterialWindow {
     callback switch_watcher(bool) -> bool;
     private property <bool> settings-enable-watcher;
 
-    tab-index: 0;
-    title: "TypeMusic";
-    preferred-width: 800px;
-    preferred-height: 600px;
-    background: MainWindowAdapter.background;
-    default-font-family: "Roboto";
 
-    property <int> tab-index;
+    property <int> tab-index: 0;
 
     HorizontalLayout {
         Sidebar {
@@ -44,18 +48,21 @@ export component MainWindow inherits MaterialWindow {
         
         // Switch Tabs
         if tab-index == 0 : DownloadView {
-            crate_task_view_index <=> root.crate_task_view_index;
+            viewIndex: download_view_index;
+            on_goto_create_task => {on_goto_create_task()}
+            back_clicked => {download_back_clicked()}
+            crate_task_view_index: crate_task_view_index;
 
-            query_is_info_showing: root.query_is_info_showing;
-            query_is_querying: root.query_is_querying;
-            query_card: root.query_card;
+            query_is_info_showing: query_is_info_showing;
+            query_is_querying: query_is_querying;
+            query_card: query_card;
             query_info(queryType, input) => {query_bili_info(queryType, input)}
 
-            is_include_parts: root.is_include_parts;
-            is_creating: root.is_creating;
-            task_item_list: root.task_item_list;
-            add_to_temp_list => {root.add_to_temp_list()}
-            add_to_create => {root.add_to_create()}
+            is_include_parts: is_include_parts;
+            is_creating: is_creating;
+            task_item_list: task_item_list;
+            add_to_temp_list => {add_to_temp_list()}
+            add_to_create => {add_to_create()}
         }
         if tab-index == 1: SpaceView{}
         if tab-index == 2: SettingsView {

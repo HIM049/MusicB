@@ -10,7 +10,7 @@ export component TaskListView {
     width: 100%;
     height: 100%;
 
-    callback on_create_task();
+    callback on_goto_create_task();
 
     FrameViewVertical {
         title: "Download";
@@ -33,6 +33,7 @@ export component TaskListView {
                 Rectangle {}
             }
 
+            // Create list button
             RippleFilledCard {
                 clickable: true;
                 HorizontalLayout {
@@ -47,7 +48,7 @@ export component TaskListView {
                         font-weight: 600;
                     }
                 }
-                clicked => {on_create_task()}
+                clicked => {on_goto_create_task()}
             }
 
             TaskList {

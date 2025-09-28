@@ -29,6 +29,7 @@ pub struct Views {
 
 #[derive(Debug, Clone, Default)]
 pub struct DownloadView {
+    pub download_view_index: i32,
     pub create_task_view_index: i32,
     pub query_is_info_showing: bool,
     pub query_is_querying: bool,

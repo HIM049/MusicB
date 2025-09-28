@@ -23,8 +23,18 @@ async fn main() {
     let ui_handle = Arc::new(ui.as_weak());
     
 
-    let (tx, rx) = mpsc::unbounded_channel::<AppEvent>();
-    
+    let (_tx, rx) = mpsc::unbounded_channel::<AppEvent>();
+    let tx = _tx.clone();
+    ui.on_on_goto_create_task(move || {
+        tx.send(AppEvent::SetDownloadViewIndex(1)).unwrap();
+    });
+
+    let tx = _tx.clone();
+    ui.on_download_back_clicked(move || {
+        tx.send(AppEvent::SetDownloadViewIndex(0)).unwrap();
+    });
+
+    let tx = _tx.clone();
     ui.on_query_bili_info(move |query_type, input| {
         println!("on_query_bili_info");
         tx.send(AppEvent::QueryBiliInfo(input.to_string(), query_type)).unwrap();

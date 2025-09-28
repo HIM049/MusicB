@@ -15,42 +15,42 @@ export struct VideoInfo {
 }
 
 export component DownloadView {
-    private property <int> viewIndex: 0;
+    in property <int> viewIndex;
+    callback on_goto_create_task();
 
-    in-out property <int> crate_task_view_index;
+    in property <int> crate_task_view_index;
     // Property for Query view
-    in-out property <bool> query_is_info_showing;
-    in-out property <bool> query_is_querying;
-    in-out property <QueryCardInfo> query_card;
+    in property <bool> query_is_info_showing;
+    in property <bool> query_is_querying;
+    in property <QueryCardInfo> query_card;
     callback query_info(int, string);
     // Property for Editor view
-    in-out property <bool> is_include_parts;
-    in-out property <bool> is_creating;
-    in-out property <[ListItem]> task_item_list;
+    in property <bool> is_include_parts;
+    in property <bool> is_creating;
+    in property <[ListItem]> task_item_list;
     callback add_to_temp_list();
     callback add_to_create();
+    callback back_clicked();
 
 
     if viewIndex == 0 : TaskListView {
-        on_create_task => {
-            viewIndex = 1;
-        }
+        on_goto_create_task => {on_goto_create_task()}
     } // Task List View
 
     if viewIndex == 1 : CreateTaskView {
-        index <=> crate_task_view_index;
+        index: crate_task_view_index;
         // Property for Query view
-        query_is_info_showing <=> root.query_is_info_showing;
-        query_is_querying <=> root.query_is_querying;
+        query_is_info_showing: root.query_is_info_showing;
+        query_is_querying: root.query_is_querying;
         query_card: root.query_card;
         // Property for Editor view
-        is_include_parts <=> root.is_include_parts;
-        is_creating <=> root.is_creating;
+        is_include_parts: root.is_include_parts;
+        is_creating: root.is_creating;
         task_item_list: root.task_item_list;
         query_info(queryType, input) => {query_info(queryType, input)}
         add_to_temp_list => {root.add_to_temp_list()}
         add_to_create => {root.add_to_create()}
-        leading_clicked => { viewIndex = 0; }
+        leading_clicked => {root.back_clicked()}
     } // Create List View
 
 }

@@ -1,5 +1,5 @@
 import { MaterialText } from "../../material-components/ui/components/material_text.slint";
-import { SmallAppBar, FilledButton, FilledCard } from "../../material-components/material.slint";
+import { SmallAppBar, FilledButton, FilledCard, TonalButton } from "../../material-components/material.slint";
 import { ScrollView, ComboBox } from "std-widgets.slint";
 import { FrameViewVertical } from "../components/frame_view.slint";
 import { OutlinedCard } from "../../material-components/ui/components/card.slint";
@@ -20,6 +20,11 @@ export component SpaceView {
                 
             }
             FilledButton {
+                text: "Button2";
+                horizontal-stretch: 0;
+                vertical-stretch: 0;
+            }            
+            TonalButton {
                 text: "Button2";
                 horizontal-stretch: 0;
                 vertical-stretch: 0;
