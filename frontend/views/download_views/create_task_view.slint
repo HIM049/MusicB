@@ -34,6 +34,7 @@ export component CreateTaskView {
     callback add_to_temp_list();
     callback add_to_create();
     callback leading_clicked(); // back button
+    callback back_to_query();
 
     width: 100%;
     height: 100%;
@@ -48,7 +49,7 @@ export component CreateTaskView {
             TextButton {
                 text: "Cancel";
                 icon: FilledIcons.undo;
-                clicked => {index = 0}
+                clicked => {back_to_query()}
             }
             Rectangle {}
         }

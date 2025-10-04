@@ -31,6 +31,7 @@ export component DownloadView {
     callback add_to_temp_list();
     callback add_to_create();
     callback back_clicked();
+    callback back_to_query();
 
 
     if viewIndex == 0 : TaskListView {
@@ -51,6 +52,7 @@ export component DownloadView {
         add_to_temp_list => {root.add_to_temp_list()}
         add_to_create => {root.add_to_create()}
         leading_clicked => {root.back_clicked()}
+        back_to_query => {back_to_query()}
     } // Create List View
 
 }

@@ -9,7 +9,7 @@ pub static APP_STATE: Lazy<Mutex<AppState>> = Lazy::new(|| {
     Mutex::new(AppState {
          current_item: None, 
          task_list: vec![], 
-         temp_task_list: vec![], 
+        //  temp_task_list: vec![], 
          views: Views::default()
         })
 });
@@ -18,7 +18,7 @@ pub static APP_STATE: Lazy<Mutex<AppState>> = Lazy::new(|| {
 pub struct AppState {
     pub current_item: Option<Video>,
     pub task_list: Vec<Task>,
-    pub temp_task_list: Vec<Task>,
+    // pub temp_task_list: Vec<Task>,
     pub views: Views,
 }
 
@@ -34,6 +34,8 @@ pub struct DownloadView {
     pub query_is_info_showing: bool,
     pub query_is_querying: bool,
     pub query_card_info: QueryCardInfoRust,
+
+    pub edit_temp_list: Vec<Task>
 }
 
 #[derive(Debug, Clone)]

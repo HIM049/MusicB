@@ -8,7 +8,8 @@ pub enum TaskType {
     Audio
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+// #[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Clone)]
 pub struct Task {
     pub task_type: TaskType,
     pub video: Video,

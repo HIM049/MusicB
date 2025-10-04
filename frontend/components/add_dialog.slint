@@ -1,0 +1,44 @@
+import { FullscreenDialog } from "../../material-components/material.slint";
+import { MaterialText } from "../../material-components/ui/components/material_text.slint";
+import { SegmentedButton } from "../../material-components/ui/components/segmented_button.slint";
+import { TextField } from "../../material-components/ui/components/text_field.slint";
+
+export component AddFullScreemDialog {
+    fullDialog := FullscreenDialog {
+        width: 600px;
+        height: 400px;
+        title: "Add Task";
+        actions: ["Cancel"];
+
+        HorizontalLayout {
+            horizontal-stretch: 1;
+            vertical-stretch: 1;
+
+            Rectangle {}
+            VerticalLayout {
+                width: 60%;
+                spacing: 10px;
+                
+                MaterialText {text: "select a type of your query";}
+                SegmentedButton {
+                    items: [
+                        {text: "BVID",},
+                        {text: "AVID",}
+                    ];
+                }
+                TextField {
+                    // text <=> userInput;
+                    label: "BVID";
+                    vertical-stretch: 0;
+                }
+                Rectangle {}
+            }
+            Rectangle {}
+        }
+
+        action_clicked(index) => {
+            self.close()
+        }
+
+    }
+}

@@ -1,11 +1,13 @@
 use std::time::{Duration, SystemTime};
+use image::{ImageBuffer, Rgba};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::bilibili::utils::extract_title;
 
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+// #[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Clone)]
 pub struct Video {
     pub info: BiliInfo,
     pub player_info: Option<PlayerInfo>,
@@ -13,7 +15,8 @@ pub struct Video {
     pub flac_stream: Option<BiliStream>,
     // pub meta: Option<Meta>,
     pub upper: Upper,
-    pub parts: Vec<VideoPart>
+    pub parts: Vec<VideoPart>,
+    pub cover_buf: Option<ImageBuffer<Rgba<u8>, Vec<u8>>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

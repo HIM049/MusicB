@@ -31,9 +31,10 @@ export component MainWindow inherits MaterialWindow {
     in property <int> crate_task_view_index;
     in property <bool> is_include_parts: true;
     in property <bool> is_creating;
-    in property <[ListItem]> task_item_list: [];
+    in property <[ListItem]> temp_task_list;
     callback add_to_temp_list();
     callback add_to_create();
+    callback back_to_query();
 
     callback switch_watcher(bool) -> bool;
     private property <bool> settings-enable-watcher;
@@ -60,9 +61,10 @@ export component MainWindow inherits MaterialWindow {
 
             is_include_parts: is_include_parts;
             is_creating: is_creating;
-            task_item_list: task_item_list;
+            task_item_list: temp_task_list;
             add_to_temp_list => {add_to_temp_list()}
             add_to_create => {add_to_create()}
+            back_to_query => {back_to_query()}
         }
         if tab-index == 1: SpaceView{}
         if tab-index == 2: SettingsView {

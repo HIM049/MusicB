@@ -40,6 +40,13 @@ async fn main() {
         tx.send(AppEvent::QueryBiliInfo(input.to_string(), query_type)).unwrap();
     });
 
+    let tx = _tx.clone();
+    ui.on_add_to_temp_list(move || {
+        println!("on_add_to_temp_list");
+        tx.send(AppEvent::AddToTempList).unwrap();
+    });
+
+
     // Start event loop
     let handle = ui_handle.clone();
     tokio::spawn(event_loop(rx, handle));

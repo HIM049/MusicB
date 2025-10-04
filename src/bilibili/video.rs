@@ -112,6 +112,7 @@ async fn get_video_details(
         flac_stream: None,
         upper: Upper::from_json(json_resp["data"]["owner"].clone()).ok_or(anyhow!(err_msg))?,
         parts: VideoPart::from_json_array(json_resp["data"]["pages"].clone()),
+        cover_buf: None,
     };
 
     Ok(video)

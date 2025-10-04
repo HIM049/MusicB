@@ -1,8 +1,8 @@
 use anyhow::anyhow;
 use image::{ImageBuffer, Rgba};
-use slint::{Image, SharedPixelBuffer};
+use slint::{Image, ModelRc, SharedPixelBuffer, VecModel};
 
-use crate::{bilibili::modules::Video, frontend::load_image, QueryCardInfo};
+use crate::{bilibili::{modules::Video, task_modules::Task}, frontend::load_image, ListItem, QueryCardInfo};
 
 
 pub async fn query_bili_info(input: String, query_type: i32) -> Result<(Video, ImageBuffer<Rgba<u8>, Vec<u8>>), anyhow::Error> {
@@ -31,4 +31,20 @@ pub fn handle_video_info(video: Video, image_buf: ImageBuffer<Rgba<u8>, Vec<u8>>
         cover: cover_image, 
         title: video.info.title.into(),
     }
+}
+
+pub fn list_item_generator(list: Vec<Task>) -> ModelRc<ListItem> {
+    let model: VecModel<ListItem> = VecModel::default();
+    for task in list {
+        if let Some(cover_buf) = task.video.cover_buf {
+                
+            model.push(ListItem { 
+                cover: Image::from_rgba8(SharedPixelBuffer::clone_from_slice(&cover_buf, cover_buf.width(), cover_buf.height())), 
+                subtitle: "".into(), 
+                title: task.part_data.unwrap().title.into(), 
+            });
+        }
+            
+    }
+    ModelRc::new(model)
 }
